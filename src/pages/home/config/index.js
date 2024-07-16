@@ -15,7 +15,7 @@ export const menuList = [
         title: '我的素材',
         icon: 'https://ossprod.jrdaimao.com/file/1720763301556227.svg',
         selectedIcon: 'https://ossprod.jrdaimao.com/file/1720763497542612.svg',
-        path: 'myMatter'
+        path: '/myMatter'
       }
     ]
   },

@@ -4,16 +4,15 @@ import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { menuList } from './config'
 import { observer } from 'mobx-react-lite'
-import { homeStore } from '@/store/home'
 import { Outlet, useNavigate } from 'react-router-dom'
+import { shareStore } from '../../store/share'
 
 const cs = classNames.bind(styles)
 
 const Home = () => {
   const nav = useNavigate()
-  
   const navClick = (item) => {
-    homeStore.setActiveKey(item.key)
+    shareStore.setActiveKey(item.key)
     nav(item.path)
   }
   return (
@@ -28,7 +27,7 @@ const Home = () => {
                 <div className={cs('menu-item-children')}>
                   {
                     item.children.map(item => {
-                      const active = homeStore.activeKey === item.key
+                      const active = shareStore.activeKey === item.key
                       const src = active ? item.selectedIcon : item.icon
                       return <div className={cs({ 'active': active })} key={item.key} onClick={() => navClick(item)}>
                         <img src={src} alt=""/>
