@@ -4,6 +4,9 @@ import styles from './index.module.less'
 import { useNavigate } from 'react-router-dom'
 import { Button } from 'antd'
 import { tools } from './config'
+import Nav from './components/Nav'
+import Draw from './components/Draw'
+import Attr from './components/Attr'
 
 const cs = classNames.bind(styles)
 
@@ -13,7 +16,7 @@ const Create = () => {
     nav(-1)
   }
   return (
-    <div className={cs('preview')}>
+    <div className={cs('create')}>
       <div className={cs('header')}>
         <div className={cs('back')} onClick={goBack}>
           <img src="https://ossprod.jrdaimao.com/file/1721035943933168.svg" alt=""/>
@@ -36,6 +39,11 @@ const Create = () => {
           <Button type="primary">保存</Button>
           <Button type="primary">发布</Button>
         </div>
+      </div>
+      <div className={cs('content')}>
+        <Nav/>
+        <Draw/>
+        <Attr/>
       </div>
     </div>
   )

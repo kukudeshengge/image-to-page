@@ -8,9 +8,7 @@ const cs = classNames.bind(styles)
 
 const Header = () => {
   const nav = useNavigate()
-  const toHome = () => {
-    nav('/myProduct')
-  }
+ 
   const items = [
     {
       key: '1',
@@ -24,7 +22,7 @@ const Header = () => {
   return (
     <div className={cs('header')}>
       {/*logo*/}
-      <h1 onClick={toHome} className={cs('logo')}>搭建H5页面</h1>
+      <a className={cs('logo')} href='/myProduct'><h1>搭建H5页面</h1></a>
       <div className={cs('header-right')}>
         <div className={cs('avatar')}>
           <Dropdown

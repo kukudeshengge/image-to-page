@@ -1,0 +1,90 @@
+.attr {
+  width: 300px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  background: #ffffff;
+}
+
+.attr-left {
+  width: 40px;
+  height: 100%;
+  border-right: 1px solid #ccd5db;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, .08), -1px 0 0 0 #e6ebed;
+
+  > div {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      background: #1261ff;
+
+      img {
+        &:nth-child(1) {
+          display: none;
+        }
+
+        &:nth-child(2) {
+          display: inline;
+        }
+      }
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+
+      &:nth-child(2) {
+        display: none;
+      }
+    }
+  }
+}
+
+.attr-right {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.attr-left .scale {
+  color: #333333;
+  font-size: 12px;
+  &:hover {
+    background: none;
+  }
+}
+
+.right-nav {
+  height: 40px;
+  display: flex;
+  div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333333;
+    font-size: 14px;
+    background: #f5f8fb;
+    &:hover,&.active {
+      color: #1261ff;
+      font-weight: 500;
+    }
+    &.active {
+      background: #ffffff;
+    }
+  }
+}
+
+.right-nav-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}

@@ -36,6 +36,15 @@ export const menuList = [
         selectedIcon: 'https://ossprod.jrdaimao.com/file/1720779328774889.svg'
       }
     ]
-  }
+  },
+  // {
+  //   key: 'config',
+  //   title: '配置中心',
+  //   children: [
+  //     {
+  //
+  //     }
+  //   ]
+  // }
 ]
 
