@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import IScroll from 'iscroll'
@@ -10,16 +10,24 @@ import { Button } from 'antd'
 const cs = classNames.bind(styles)
 
 const Attr = () => {
-  const { attrActiveKey } = createStore
+  const { attrActiveKey, workspace } = createStore
+  const [attrScroll, setAttrScroll] = useState(null)
+  
   useEffect(() => {
-    new IScroll('#attr-right-nav-content', {
+    const attrScroll = new IScroll('#attr-right-nav-content', {
       mouseWheel: true,
       scrollbars: true,
       preventDefault: false
     })
+    setAttrScroll(attrScroll)
   }, [])
+  
   const onChangeTab = (item) => {
     createStore.setAttrActiveKey(item.type)
+    setTimeout(() => {
+      attrScroll.refresh()
+      attrScroll.scrollTo(0, 0)
+    })
   }
   
   const Component = attrTabCom[attrActiveKey]
@@ -70,7 +78,7 @@ const Attr = () => {
         </div>
         <div className={cs('right-nav-content')} id="attr-right-nav-content">
           <div>
-            <Component/>
+            <Component attrScroll={attrScroll}/>
           </div>
         </div>
       </div>

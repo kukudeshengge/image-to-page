@@ -5,8 +5,16 @@ class CreateStore {
   filterActiveKey = 0
   scroll = null
   canvas = null
+  workspace = null
   attrActiveKey = 0
   editPageLoadingModal = false
+  pageAngle = 0
+  rectColor = {
+    type: 'bg',
+    color: '#fff'
+  }
+  showAllFilter = false
+  filterKey = 'normal'
   
   constructor () {
     makeAutoObservable(this)

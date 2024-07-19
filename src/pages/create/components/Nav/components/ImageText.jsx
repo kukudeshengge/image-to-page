@@ -9,8 +9,8 @@ const ImageText = () => {
   return (
     <div className={cs('shape-list')}>
       {
-        [1].map(item => {
-          return <ShapeItem/>
+        [1].map((item, index) => {
+          return <ShapeItem key={index}/>
         })
       }
     </div>

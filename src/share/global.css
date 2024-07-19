@@ -13,3 +13,8 @@ html, body, #root {
     height: 100%;
     overflow: hidden;
 }
+
+#root {
+    min-width: 1200px;
+    user-select: none;
+}

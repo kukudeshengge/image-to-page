@@ -18,8 +18,8 @@ const UploadCom = () => {
       </div>
       <div className={cs('upload-content')}>
         {
-          navUploadList.map(item => {
-            return <div>
+          navUploadList.map((item,index) => {
+            return <div key={index}>
               <img className={cs('type-logo')} src={item.icon} alt=""/>
               <div className={cs('upload-desc')}>
                 <div>{item.title}</div>

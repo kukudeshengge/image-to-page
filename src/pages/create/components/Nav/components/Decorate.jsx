@@ -9,8 +9,8 @@ const Decorate = () => {
   return (
     <div className={cs('shape-list')}>
       {
-        [1, 2, 3, 4, 5, 6, 7, 9].map(item => {
-          return <ShapeItem/>
+        [1, 2, 3, 4, 5, 6, 7, 9].map((item, index) => {
+          return <ShapeItem key={index}/>
         })
       }
     </div>

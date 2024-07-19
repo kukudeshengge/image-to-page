@@ -8,8 +8,8 @@ const Wordart = () => {
   return (
     <div className={cs('word-dart')}>
       {
-        [1, 2, 3, 4, 5].map(item => {
-          return <div>
+        [1, 2, 3, 4, 5].map((item,index) => {
+          return <div key={index}>
             <img src="https://ossprod.jrdaimao.com/file/1721126001961320.jpg" alt=""/>
           </div>
         })

@@ -12,13 +12,14 @@ const cs = classNames.bind(styles)
 const MyProduct = () => {
   const nav = useNavigate()
   const [form] = Form.useForm()
-  const {getItemStyle} = useGetCardStyle()
+  const { getItemStyle } = useGetCardStyle()
   const [list, setList] = useState(['add', 1, 2, 3, 4, 5, 6, 7, 8, 9])
   
   useEffect(() => {
     new IScroll('#my-product-list-scroll', {
       mouseWheel: true,
       scrollbars: true,
+      preventDefault: false
     })
   }, [])
   

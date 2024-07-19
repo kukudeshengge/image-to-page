@@ -1,49 +1,14 @@
-import React from 'react'
+import React  from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { BeatLoader } from 'react-spinners'
-import { Button, Input, Modal, Row, Col } from 'antd'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../store/create'
-import { loadingList } from '../config'
+import EditLoading from './EditLoading'
 
 const cs = classNames.bind(styles)
 
-const EditLoading = observer(() => {
-  const { editPageLoadingModal } = createStore
-  const onOk = () => {
-  
-  }
-  return <Modal
-    width={600}
-    maskClosable={false}
-    onCancel={createStore.closeEditPageLoadingModal}
-    onOk={onOk}
-    title="编辑加载页"
-    open={editPageLoadingModal}
-  >
-    <div style={{ padding: 15 }}>
-      <Row align={'middle'} style={{ marginBottom: 20 }}>
-        <Col span={3}>提示文案</Col>
-        <Col span={20}>
-          <Input maxLength={10} placeholder="请输入"/>
-        </Col>
-      </Row>
-      <Row>
-        {
-          loadingList.map(item => {
-            const Com = item.com
-            return <Col span={6} key={item.type}>
-              <div className={cs('loading-list-item')}>
-                <Com size={10} color="#1261ff"/>
-              </div>
-            </Col>
-          })
-        }
-      </Row>
-    </div>
-  </Modal>
-})
+
 
 const PageList = () => {
   const list = new Array(10).fill({})
@@ -75,7 +40,7 @@ const PageList = () => {
         </div>
         {
           list.map((item, index) => {
-            return <div className={cs({ 'page-list-item': true, active: index === 1 })}>
+            return <div key={index} className={cs({ 'page-list-item': true, active: index === 1 })}>
               <div className={cs('page-list-item-left')}>
                 <div>{index + 1}</div>
                 <span>第{index + 1}页</span>

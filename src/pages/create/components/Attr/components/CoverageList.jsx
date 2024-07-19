@@ -10,7 +10,7 @@ const CoverageList = () => {
     <div className={cs('coverage-list')}>
       {
         list.map((item, index) => {
-          return <div className={cs({ 'coverage-list-item': true, active: index === 2 })}>
+          return <div key={index} className={cs({ 'coverage-list-item': true, active: index === 2 })}>
             <span>图片{index + 1}</span>
             <span>
               <i>

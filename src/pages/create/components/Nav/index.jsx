@@ -46,6 +46,7 @@ const Nav = () => {
             filterList.map(item => {
               const active = filterActiveKey === item.value
               return <div
+                key={item.value}
                 onClick={() => onFilterChange(item)}
                 className={cs({ active })}
               >
