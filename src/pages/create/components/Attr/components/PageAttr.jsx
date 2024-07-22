@@ -5,14 +5,13 @@ import { Radio, Slider, InputNumber, Row, Col, Button, Popover } from 'antd'
 import { bgColorList, filterList, linearBgColorList } from '../config'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../store/create'
-import { SketchPicker } from 'react-color'
 import PopoverColor from './PopoverColor'
 
 const cs = classNames.bind(styles)
 
 const LinearPreview = observer((props) => {
   const { setLinearColor } = props
-  const { rectColor } = createStore
+  const { rectColor } = createStore.getCurrentPage()
   const getBorder = (value) => {
     return value ? 'solid 1px #ccc' : 'none'
   }
@@ -48,22 +47,26 @@ const LinearPreview = observer((props) => {
 
 const PageAttr = (props) => {
   const { attrScroll } = props
-  const { workspace, pageAngle, rectColor, filterKey, showAllFilter } = createStore
+  const { workspace } = createStore
+  const pageStore = createStore.getCurrentPage()
+  const { rectColor, pageAngle, opacity, filterKey,showAllFilter } = pageStore
   const disabledAngle = rectColor.type !== 'bg-linear'
-  const [bgType, setBgType] = useState(0)
+  const [bgType, setBgType] = useState(rectColor.type === 'bg-linear' ? 1 : 0)
+  // bg color type change
   const onBgTypeChange = (e) => {
     setBgType(e.target.value)
   }
   // 设置背景色
   const setNormalColor = (color) => {
     color = typeof color === 'string' ? color : color.hex
-    createStore.rectColor = { type: 'bg', color }
+    pageStore.rectColor = { type: 'bg', color }
     workspace.setRectAttr('fill', color).renderAll()
+    createStore.modifiedCanvas()
   }
   // 设置渐变背景色
   const setLinearColor = (item) => {
-    createStore.pageAngle = 0
-    createStore.rectColor = {
+    pageStore.pageAngle = 0
+    pageStore.rectColor = {
       type: 'bg-linear',
       start: item.start,
       end: item.end
@@ -73,29 +76,33 @@ const PageAttr = (props) => {
       endColor: item.end,
       angle: 0
     })
+    createStore.modifiedCanvas()
   }
   // 设置透明度
   const onOpacityChange = (e) => {
-    e = 1 - (e ? e / 100 : 0)
-    workspace.setRectAttr('opacity', e).renderAll()
+    const attr = 1 - (e ? e / 100 : 0)
+    workspace.setRectAttr('opacity', attr).renderAll()
+    pageStore.opacity = e
+    createStore.modifiedCanvas()
   }
   // 设置渐变角度
   const onAngleChange = (e) => {
     if (rectColor.type !== 'bg-linear') return
-    createStore.pageAngle = e
+    pageStore.pageAngle = e
     workspace.setRectLinearColor({
       startColor: rectColor.start,
       endColor: rectColor.end,
       angle: e
     })
+    createStore.modifiedCanvas()
   }
   // 修改滤镜
   const onFilterChange = (item) => {
-    createStore.filterKey = item.type
+    pageStore.filterKey = item.type
     workspace.setRectFilter(item)
   }
   const onChangeShowAllFilter = () => {
-    createStore.showAllFilter = !showAllFilter
+    pageStore.showAllFilter = !showAllFilter
     setTimeout(() => {
       attrScroll.refresh()
     })
@@ -136,7 +143,8 @@ const PageAttr = (props) => {
                 tooltip={{ formatter: null }}
                 min={0}
                 max={360}
-                onChange={onAngleChange}
+                onChange={e => pageStore.pageAngle = e}
+                onChangeComplete={onAngleChange}
                 value={pageAngle || 0}
               />
             </Col>
@@ -168,7 +176,7 @@ const PageAttr = (props) => {
         </Col>
         <Col span={18}>
           <InputNumber
-            defaultValue={0}
+            value={opacity}
             onChange={onOpacityChange}
             min={0}
             max={100}

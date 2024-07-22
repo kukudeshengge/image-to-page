@@ -11,17 +11,17 @@ const cs = classNames.bind(styles)
 const Nav = () => {
   const { navActiveKey, filterActiveKey } = createStore
   const onChangeNavKey = (item) => {
-    createStore.setNavActiveKey(item.type)
+    createStore.navActiveKey = item.type
   }
   const onFilterChange =(item) => {
-    createStore.setFilterActiveKey(item.value)
+    createStore.filterActiveKey = item.value
   }
   useEffect(() => {
-    const scroll =  new IScroll('#right-nav-content', {
+    const scroll = new IScroll('#right-nav-content', {
       mouseWheel: true,
       scrollbars: true
     })
-    createStore.setScrollLiving(scroll)
+    createStore.scroll = scroll
   }, [])
   
   const Component = ComEnum[navActiveKey]
@@ -58,7 +58,7 @@ const Nav = () => {
         <div className={cs('right-nav-content')} id="right-nav-content">
           <div className={cs('nav-content')}>
             <div style={{ height: 15 }}></div>
-            <Component/>
+            {Component && <Component/>}
             <div style={{ height: 15 }}></div>
           </div>
         </div>

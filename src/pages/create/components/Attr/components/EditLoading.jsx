@@ -19,17 +19,21 @@ const getBg = (value, angle) => {
 }
 
 const EditLoading = () => {
-  const { editPageLoadingModal, rectColor, pageAngle } = createStore
+  const { editPageLoadingModal, pageList, pageAngle } = createStore
+  const {rectColor} = pageList[0]
   
   const onOk = () => {
   
+  }
+  const onCancel = () => {
+    createStore.editPageLoadingModal = false
   }
   const background = getBg(rectColor, pageAngle)
   return <Modal
     destroyOnClose
     width={800}
     maskClosable={false}
-    onCancel={createStore.closeEditPageLoadingModal}
+    onCancel={onCancel}
     onOk={onOk}
     title="编辑加载页"
     // open={true}

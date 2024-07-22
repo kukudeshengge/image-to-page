@@ -7,13 +7,26 @@ import { tools } from './config'
 import Nav from './components/Nav'
 import Draw from './components/Draw'
 import Attr from './components/Attr'
+import { observer } from 'mobx-react-lite'
+import { fabric } from 'fabric'
+import { createStore } from '../../store/create'
 
 const cs = classNames.bind(styles)
 
 const Create = () => {
+  const { canvas } = createStore
   const nav = useNavigate()
   const goBack = () => {
     nav(-1)
+  }
+  const tooClick = (item) => {
+    const text = new fabric.IText('你好啊', {
+      fontSize: 14,
+      left: 250,
+      top: 300
+    })
+    canvas.add(text)
+    canvas.renderAll()
   }
   return (
     <div className={cs('create')}>
@@ -26,7 +39,7 @@ const Create = () => {
         <div className={cs('header-center')}>
           {
             tools.map(item => {
-              return <div key={item.type}>
+              return <div onClick={() => tooClick(item)} key={item.type}>
                 <img src={item.icon} alt=""/>
                 <img src={item.activeIcon} alt=""/>
                 <span>{item.title}</span>
@@ -49,4 +62,4 @@ const Create = () => {
   )
 }
 
-export default Create
+export default observer(Create)

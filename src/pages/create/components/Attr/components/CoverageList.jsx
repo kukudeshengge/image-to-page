@@ -1,13 +1,19 @@
 import React from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
+import { Empty } from 'antd'
 
 const cs = classNames.bind(styles)
 
 const CoverageList = () => {
-  const list = new Array(20).fill({})
+  const list = []
   return (
     <div className={cs('coverage-list')}>
+      {
+        <div style={{ marginTop: 100 }}>
+          <Empty description='空空如也~'/>
+        </div>
+      }
       {
         list.map((item, index) => {
           return <div key={index} className={cs({ 'coverage-list-item': true, active: index === 2 })}>

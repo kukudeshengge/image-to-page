@@ -1,35 +1,31 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { fabric } from 'fabric'
 import { createStore } from '../../../../store/create'
 import { observer } from 'mobx-react-lite'
 import Workspace from '../../core/workspace'
+import { getDocumentSize } from '../../../../utils'
 
 const cs = classNames.bind(styles)
 
 const Draw = () => {
-  const container = useRef(null)
+  
   useEffect(() => {
-    const width = container.current.clientWidth
-    const height = container.current.clientHeight
+    const { width, height } = getDocumentSize()
     const canvas = new fabric.Canvas('draw-canvas', {
-      width,
-      height,
+      width: width - 660,
+      height: height - 56,
       stopContextMenu: true
     })
-    const workspace = new Workspace(canvas, {
-      width,
-      height
-    })
-    createStore.canvas = canvas
-    createStore.workspace = workspace
+    const workspace = new Workspace(canvas)
+    createStore.init(canvas, workspace)
   }, [])
   
   return (
     <div className={cs('draw')}>
-      <div className={cs('draw-canvas-wrap')} ref={container}>
-        <canvas className={cs('draw-canvas')} id="draw-canvas"/>
+      <div className={cs('draw-canvas-wrap')}>
+        <canvas id="draw-canvas"/>
       </div>
     </div>
   )

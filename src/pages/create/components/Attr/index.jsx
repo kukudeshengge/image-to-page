@@ -5,13 +5,11 @@ import IScroll from 'iscroll'
 import { attrTabCom, attrTabList } from './config'
 import { createStore } from '../../../../store/create'
 import { observer } from 'mobx-react-lite'
-import { Button } from 'antd'
 
 const cs = classNames.bind(styles)
 
 const Attr = () => {
-  const { attrActiveKey, workspace } = createStore
-  const [attrScroll, setAttrScroll] = useState(null)
+  const { attrActiveKey, attrScroll } = createStore
   
   useEffect(() => {
     const attrScroll = new IScroll('#attr-right-nav-content', {
@@ -19,11 +17,11 @@ const Attr = () => {
       scrollbars: true,
       preventDefault: false
     })
-    setAttrScroll(attrScroll)
+    createStore.attrScroll = attrScroll
   }, [])
   
   const onChangeTab = (item) => {
-    createStore.setAttrActiveKey(item.type)
+    createStore.attrActiveKey = item.type
     setTimeout(() => {
       attrScroll.refresh()
       attrScroll.scrollTo(0, 0)
@@ -78,7 +76,7 @@ const Attr = () => {
         </div>
         <div className={cs('right-nav-content')} id="attr-right-nav-content">
           <div>
-            <Component attrScroll={attrScroll}/>
+            {Component && <Component attrScroll={attrScroll}/>}
           </div>
         </div>
       </div>
