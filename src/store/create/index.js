@@ -39,7 +39,6 @@ class CreateStore {
     console.log('modifiedCanvas')
     const pageItem = this.getCurrentPage()
     pageItem.canvasData = this.workspace.toObject()
-    pageItem.image = this.workspace.toImage()
   }
   getCurrentPage = () => {
     return this.pageList[this.pageIndex]
@@ -72,6 +71,21 @@ class CreateStore {
   deletePage = (index) => {
     this.pageList.splice(index, 1)
     this.pageIndex = 0
+    const currentPageItem = this.getCurrentPage()
+    this.workspace.loadFromJSON(currentPageItem)
+    setTimeout(() => this.attrScroll.refresh())
+  }
+  // 复制页面
+  copyPage = (index) => {
+    const page = this.pageList[index]
+    const copyPage = new PageItemStore()
+    Object.keys(page).forEach(key => {
+      if (key !== 'id') {
+        copyPage[key] = JSON.parse(JSON.stringify(page[key]))
+      }
+    })
+    this.pageList.splice(index, 0, copyPage)
+    this.pageIndex = index + 1
     setTimeout(() => this.attrScroll.refresh())
   }
 }

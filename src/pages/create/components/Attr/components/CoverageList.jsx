@@ -6,13 +6,13 @@ import { Empty } from 'antd'
 const cs = classNames.bind(styles)
 
 const CoverageList = () => {
-  const list = []
+  const list = [1, 2, 3, 4]
   return (
     <div className={cs('coverage-list')}>
       {
-        <div style={{ marginTop: 100 }}>
-          <Empty description='空空如也~'/>
-        </div>
+        list.length === 0 ? <div style={{ marginTop: 100 }}>
+          <Empty description="空空如也~"/>
+        </div> : null
       }
       {
         list.map((item, index) => {

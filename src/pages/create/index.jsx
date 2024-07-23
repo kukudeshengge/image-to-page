@@ -27,6 +27,7 @@ const Create = () => {
     })
     canvas.add(text)
     canvas.renderAll()
+    createStore.modifiedCanvas()
   }
   return (
     <div className={cs('create')}>

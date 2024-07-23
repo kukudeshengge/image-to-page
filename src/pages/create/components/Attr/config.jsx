@@ -145,7 +145,7 @@ export const filterList = [
   {
     title: '胶片',
     style: {
-      filter: 'brightness(112%) contrast(77%) saturate(150%) sepia(18%)'
+      filter: 'brightness(112%) contrast(77%) saturate(150%) sepia(18%)',
     },
     type: 'jiaopian'
   },

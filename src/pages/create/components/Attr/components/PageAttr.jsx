@@ -99,6 +99,7 @@ const PageAttr = (props) => {
   // 修改滤镜
   const onFilterChange = (item) => {
     pageStore.filterKey = item.type
+    pageStore.filterKeyStyle = item.style
     workspace.setRectFilter(item)
   }
   const onChangeShowAllFilter = () => {

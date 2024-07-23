@@ -23,7 +23,7 @@ const Draw = () => {
   }, [])
   
   return (
-    <div className={cs('draw')}>
+    <div className={cs('draw')} id='draw-container'>
       <div className={cs('draw-canvas-wrap')}>
         <canvas id="draw-canvas"/>
       </div>

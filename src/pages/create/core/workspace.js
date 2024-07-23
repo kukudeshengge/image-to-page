@@ -68,8 +68,11 @@ class Workspace {
     return this.canvas.getObjects().find(item => item.id === 'workspace')
   }
   setRectFilter = (item) => {
-    const el = document.querySelector('.canvas-container')
-    el.style.filter = item.style.filter
+    const el = document.querySelector('#draw-container')
+    const style = item.style
+    el.style = Object.keys(style).reduce((prev, next) => {
+      return `${prev}${next}:${style[next]};`
+    }, '')
   }
   
   // 获取图片
@@ -93,8 +96,7 @@ class Workspace {
   
   // 加载json
   loadFromJSON (data) {
-    const filterItem = filterList.find(item => item.type === data.filterKey)
-    this.setRectFilter(filterItem)
+    this.setRectFilter({ style: data.filterKeyStyle })
     this.canvas.loadFromJSON(data.canvasData)
   }
 }
