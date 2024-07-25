@@ -99,14 +99,12 @@ const PageAttr = (props) => {
   // 修改滤镜
   const onFilterChange = (item) => {
     pageStore.filterKey = item.type
-    pageStore.filterKeyStyle = item.style
+    pageStore.filterStyle = item.style
     workspace.setRectFilter(item)
   }
   const onChangeShowAllFilter = () => {
     pageStore.showAllFilter = !showAllFilter
-    setTimeout(() => {
-      attrScroll.refresh()
-    })
+    setTimeout(() => attrScroll.refresh())
   }
   const renderFilterList = showAllFilter ? filterList : filterList.slice(0, 6)
   
@@ -185,6 +183,9 @@ const PageAttr = (props) => {
             style={{ width: '100%' }}
           />
         </Col>
+      </Row>
+      <Row justify='center'>
+        <Button onClick={createStore.applyBackground}>将背景应用于所有页面</Button>
       </Row>
       <div className={cs('page-attr-share-title')} style={{ margin: '30px 0 20px 0' }}>
         <span className={cs('page-attr-share-title-text')}>页面滤镜</span>

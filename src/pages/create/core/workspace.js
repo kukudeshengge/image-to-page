@@ -1,6 +1,7 @@
 import { fabric } from 'fabric'
 import { cssToFabricGradient } from './utils'
-import { filterList } from '../components/Attr/config'
+import Menu from './menu/menu'
+import { plugins } from './plugins'
 
 const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor']
 
@@ -13,24 +14,34 @@ class Workspace {
   
   constructor (canvas) {
     this.canvas = canvas
+    this.canvas.share = {}
     this.canvasWidth = canvas.width
     this.canvasHeight = canvas.height
+    this._initPlugins()
     this.initRect()
+  }
+  
+  _initPlugins () {
+    this._use('menu', Menu)
+    for (let i = 0; i < plugins.length; i++) {
+      this._use(plugins[i].name, plugins[i].plugin)
+    }
+  }
+  
+  _use (name, C) {
+    this[name] = new C(this.canvas, this)
+    this.canvas.share[name] = this[name]
   }
   
   // 初始化rect
   initRect = () => {
     const width = this.rectWidth
     const height = this.rectHeight
-    const left = this.canvasWidth / 2 - this.rectWidth / 2
-    const top = this.canvasHeight / 2 - this.rectHeight / 2
     const rect = new fabric.Rect({
       id: 'workspace',
       width,
       height,
       fill: '#fff',
-      left,
-      top,
       selectable: false,
       controls: false,
       hoverCursor: 'default'
@@ -42,8 +53,21 @@ class Workspace {
       // }
     })
     this.canvas.add(rect)
-    this.canvas.renderAll()
+    this.setCenterFromObject(rect)
   }
+  
+  // 设置画布中心到指定对象中心点上
+  setCenterFromObject (object) {
+    const { canvas, canvasWidth, canvasHeight } = this
+    const objCenter = object.getCenterPoint()
+    const viewportTransform = canvas.viewportTransform
+    if (!canvasWidth || !canvasHeight || !viewportTransform) return
+    viewportTransform[4] = canvasWidth / 2 - objCenter.x * viewportTransform[0]
+    viewportTransform[5] = canvasHeight / 2 - objCenter.y * viewportTransform[3]
+    canvas.setViewportTransform(viewportTransform)
+    canvas.renderAll()
+  }
+  
   // 修改rect属性
   setRectAttr = (name, value) => {
     this.getRect().set(name, value)
@@ -96,7 +120,7 @@ class Workspace {
   
   // 加载json
   loadFromJSON (data) {
-    this.setRectFilter({ style: data.filterKeyStyle })
+    this.setRectFilter({ style: data.filterStyle })
     this.canvas.loadFromJSON(data.canvasData)
   }
 }

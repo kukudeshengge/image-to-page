@@ -37,35 +37,61 @@ export const attrTabCom = {
 export const loadingList = [
   {
     type: 'BarLoader',
-    com: BarLoader
+    com: BarLoader,
+    props: {
+      width: 40
+    }
   },
   {
     type: 'BeatLoader',
-    com: BeatLoader
+    com: BeatLoader,
+    props: {
+      size: 5
+    }
   },
   {
     type: 'GridLoader',
-    com: GridLoader
+    com: GridLoader,
+    props: {
+      size: 5
+    }
   },
   {
     type: 'PulseLoader',
-    com: PulseLoader
+    com: PulseLoader,
+    props: {
+      size: 5
+    }
   },
-  {
-    type: 'RotateLoader',
-    com: RotateLoader
-  },
-  {
-    type: 'RiseLoader',
-    com: RiseLoader
-  },
+  // {
+  //   type: 'RotateLoader',
+  //   com: RotateLoader,
+  //   props: {
+  //     size: 5,
+  //   }
+  // },
+  // {
+  //   type: 'RiseLoader',
+  //   com: RiseLoader,
+  //   props: {
+  //     width:10,
+  //     size: 5,
+  //   }
+  // },
   {
     type: 'ScaleLoader',
-    com: ScaleLoader
+    com: ScaleLoader,
+    props: {
+      width: 2,
+      height: 8
+    }
   },
   {
     type: 'SyncLoader',
-    com: SyncLoader
+    com: SyncLoader,
+    props: {
+      size: 5
+    }
   }
 ]
 
@@ -145,7 +171,7 @@ export const filterList = [
   {
     title: '胶片',
     style: {
-      filter: 'brightness(112%) contrast(77%) saturate(150%) sepia(18%)',
+      filter: 'brightness(112%) contrast(77%) saturate(150%) sepia(18%)'
     },
     type: 'jiaopian'
   },
@@ -323,5 +349,5 @@ export const filterList = [
       filter: 'saturate(130%) brightness(93%) contrast(121%) sepia(40%) grayscale(30%)'
     },
     type: 'gongye'
-  },
+  }
 ]

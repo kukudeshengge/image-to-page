@@ -1,15 +1,23 @@
 import { makeAutoObservable } from 'mobx'
 import { PageItemStore } from './pageItem'
+import { message } from 'antd'
 
 class CreateStore {
   scroll = null
   attrScroll = null
   navActiveKey = 'image-text'
   filterActiveKey = 0
-  attrActiveKey = 2
+  attrActiveKey = 1
   editPageLoadingModal = false
   canvas = null
   workspace = null
+  loadingPage = {
+    text: '',
+    textColor: '#333333',
+    dotType: 'BeatLoader',
+    dotColor: '#1261ff'
+  }
+  selectObjects = []
   pageList = [
     new PageItemStore()
   ]
@@ -86,7 +94,21 @@ class CreateStore {
     })
     this.pageList.splice(index, 0, copyPage)
     this.pageIndex = index + 1
+    this.workspace.loadFromJSON(copyPage)
     setTimeout(() => this.attrScroll.refresh())
+  }
+  // 应用背景到所有页面
+  applyBackground = () => {
+    const currentPage = this.getCurrentPage()
+    const currentRectFill = currentPage.canvasData.objects.find(item => item.id === 'workspace').fill
+    this.pageList.forEach(page => {
+      page.rectColor = { ...currentPage.rectColor }
+      page.pageAngle = currentPage.pageAngle
+      page.opacity = currentPage.opacity
+      const rect = page.canvasData.objects.find(item => item.id === 'workspace')
+      rect.fill = JSON.parse(JSON.stringify(currentRectFill))
+    })
+    message.success('应用背景成功')
   }
 }
 

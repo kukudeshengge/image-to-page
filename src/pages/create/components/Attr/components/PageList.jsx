@@ -1,33 +1,32 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
-import { BeatLoader } from 'react-spinners'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../store/create'
-import EditLoading from './EditLoading'
+import EditLoading, { getBg } from './EditLoading'
 import { fabric } from 'fabric'
 import { Tooltip } from 'antd'
+import { loadingList } from '../config'
 
 const cs = classNames.bind(styles)
 
 const ThumbCanvas = observer(({ data }) => {
   const container = useRef()
   const canvas = useRef()
-  
   useEffect(() => {
     canvas.current = new fabric.StaticCanvas(container.current, {
-      width: container.current.clientWidth,
-      height: container.current.clientHeight
+      width: container.current.clientWidth * 2,
+      height: container.current.clientHeight * 2
     })
   }, [])
   
   useEffect(() => {
     loadFromJSON()
-  }, [data])
+  }, [data.rectColor, data.canvasData])
   
   const loadFromJSON = async () => {
     if (!canvas.current) return
-    await canvas.current.loadFromJSON(data)
+    await canvas.current.loadFromJSON(data.canvasData)
     const rect = canvas.current.getObjects().find(item => item.id === 'workspace')
     const width = container.current.clientWidth
     const height = container.current.clientHeight
@@ -44,11 +43,12 @@ const ThumbCanvas = observer(({ data }) => {
     canvas.current.renderAll()
   }
   
-  return <canvas ref={container}/>
+  return <canvas style={{ transform: 'scale(0.5)', transformOrigin: 'left top' }} ref={container}/>
 })
 
 const PageList = () => {
-  const { pageIndex, pageList } = createStore
+  const { pageIndex, pageList, loadingPage } = createStore
+  const startPage = pageList[0]
   
   const openEditModal = () => {
     createStore.editPageLoadingModal = true
@@ -72,6 +72,15 @@ const PageList = () => {
     e.stopPropagation()
     createStore.copyPage(index)
   }
+  
+  const LoadingCom = useMemo(() => {
+    const item = loadingList.find(item => item.type === loadingPage.dotType)
+    const Com = item.com
+    return <Com {...item.props} color={loadingPage.dotColor}/>
+  }, [loadingPage.dotType, loadingPage.dotColor])
+  
+  const loadingBg = getBg(startPage.rectColor, startPage.pageAngle)
+  
   return (<div>
     <div className={cs('page-list')}>
       <div className={cs('page-list-item', 'page-list-item-loading')}>
@@ -82,10 +91,10 @@ const PageList = () => {
           <span>加载页</span>
         </div>
         <div className={cs('page-list-item-center')}>
-          <div className={cs('page-list-item-page')}>
+          <div className={cs('page-list-item-page')} style={{ background: loadingBg }}>
             <div className={cs('page-loading')}>
-              <BeatLoader size={4} color="#1261ff"/>
-              <span>加载中</span>
+              {LoadingCom ? LoadingCom : null}
+              <span style={{ color: loadingPage.textColor }}>{loadingPage.text}</span>
             </div>
           </div>
           <div className={cs('page-list-item-add')}>
@@ -112,11 +121,9 @@ const PageList = () => {
             <div>{index + 1}</div>
             <span>第{index + 1}页</span>
           </div>
-          <div className={cs('page-list-item-center')}
-          >
-            <div className={cs('svg-view')} style={{ ...item.filterKeyStyle }}>
-              <ThumbCanvas data={item.canvasData}/>
-              {/*{item.image ? <img src={item.image} alt=""/> : null}*/}
+          <div className={cs('page-list-item-center')}>
+            <div className={cs('svg-view')} style={{ ...item.filterStyle }}>
+              <ThumbCanvas data={item}/>
             </div>
             <div className={cs('page-list-item-add')} onClick={(e) => addPage(e, index)}>
               <img src="https://ossprod.jrdaimao.com/file/1721198079884595.svg" alt=""/>
@@ -130,13 +137,18 @@ const PageList = () => {
                   <img src="https://ossprod.jrdaimao.com/file/1721701645462222.svg" alt=""/>
                 </span>
             </Tooltip>
-            {pageList.length > 1 ? <Tooltip title="删除当前页面" placement="left"
-                                            overlayClassName={cs('page-list-tip')}>
+            {pageList.length > 1 ?
+              <Tooltip
+                title="删除当前页面"
+                placement="left"
+                overlayClassName={cs('page-list-tip')}
+              >
                 <span onClick={(e) => deleteItem(e, index)}>
                     <img src="https://ossprod.jrdaimao.com/file/1721701467925924.svg" alt=""/>
                     <img src="https://ossprod.jrdaimao.com/file/1721701612975153.svg" alt=""/>
                 </span>
-            </Tooltip> : null}
+              </Tooltip>
+              : null}
           </div>
         </div>
       })}
