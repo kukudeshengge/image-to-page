@@ -186,7 +186,7 @@ export const combinationMenus = [
     id: 'combination'
   },
   {
-    text: '拆分组合',
+    text: '拆分',
     fn: 'tools.splitCombination',
     id: 'splitCombination'
   }

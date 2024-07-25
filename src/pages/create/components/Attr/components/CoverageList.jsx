@@ -13,7 +13,7 @@ const ObjectThumb = ({ object }) => {
   
   useEffect(() => {
     try {
-      const name = object.type === 'i-text' ? 'IText' : object.type[0].toUpperCase() + object.type.slice(1)
+      const name = object.type[0].toUpperCase() + object.type.slice(1)
       fabric[name].fromObject(object, object => {
         object.set({
           visible: true,
@@ -61,9 +61,18 @@ const CoverageList = () => {
     if (!object) return
     workspace.tools.changeObjectLock(object)
   }
+  // 选择
   const changeSelect = (item) => {
     const object = getObject(item.id)
+    workspace.hoverBorder.clearBorder()
     canvas.setActiveObject(object).renderAll()
+  }
+  const onMouseLeave = () => {
+    workspace.hoverBorder.clearBorder()
+  }
+  const onMouseEnter = (item) => {
+    const object = getObject(item.id)
+    workspace.hoverBorder.drawRect(object)
   }
   return (
     <div className={cs('coverage-list')}>
@@ -75,6 +84,8 @@ const CoverageList = () => {
       {
         list.map((item) => {
           return <div
+            onMouseEnter={() => onMouseEnter(item)}
+            onMouseLeave={onMouseLeave}
             onClick={() => changeSelect(item)}
             key={item.id}
             className={cs({ 'coverage-list-item': true, active: activeIdList.includes(item.id) })}

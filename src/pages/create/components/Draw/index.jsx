@@ -27,13 +27,13 @@ const Draw = () => {
     tooClick(canvas)
   }, [])
   const tooClick = (canvas) => {
-    const text = new fabric.IText('你好啊', {
+    const text = new fabric.Textbox('你好啊', {
       fontSize: 14,
       left: 20,
       top: 300,
       id: uuid()
     })
-    const text2 = new fabric.IText('你好啊', {
+    const text2 = new fabric.Textbox('你好啊', {
       fontSize: 20,
       fontWeight: '600',
       left: 20,

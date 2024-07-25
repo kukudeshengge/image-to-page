@@ -3,6 +3,16 @@ import { v4 as uuid } from 'uuid'
 import { createStore } from '../../../../store/create'
 import { fabric } from 'fabric'
 
+const lockAttrs = [
+  'lockMovementX',
+  'lockMovementY',
+  'lockRotation',
+  'lockScalingX',
+  'lockScalingY',
+  'hasControls',
+  'selectable',
+  'editable'
+]
 /**
  * 一些常用工具
  */
@@ -24,6 +34,11 @@ class Tools extends Base {
   cutObject = () => {
     this.copyObject()
     this.deleteObject()
+  }
+  changeLock = (object) => {
+    lockAttrs.forEach((key) => {
+      object[key] = !object[key]
+    })
   }
   /**
    * 粘贴对象
@@ -85,11 +100,11 @@ class Tools extends Base {
     }
     if (object.forEachObject) {
       object.forEachObject(item => {
-        item.hasControls = !item.hasControls
+        this.changeLock(item)
       })
-      object.hasControls = !object.hasControls
+      this.changeLock(object)
     } else {
-      object.hasControls = !object.hasControls
+      this.changeLock(object)
     }
     this.canvas.renderAll()
     createStore.modifiedCanvas()

@@ -1,7 +1,7 @@
 import createMenu from './createMenu'
 import './menu.less'
 import Base from '../plugins/Base'
-import { getMenuFunc } from '../utils'
+import { getMenuFunc } from '../utils/utils'
 
 class Menu extends Base {
   menuEl = null

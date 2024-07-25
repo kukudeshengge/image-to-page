@@ -1,7 +1,7 @@
 import hotkeys from 'hotkeys-js'
 import Base from './Base'
 import { MenuKeys } from '../menu/createMenu'
-import { getMenuFunc } from '../utils'
+import { getMenuFunc } from '../utils/utils'
 import { createStore } from '../../../../store/create'
 
 /**

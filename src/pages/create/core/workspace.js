@@ -1,7 +1,8 @@
 import { fabric } from 'fabric'
-import { cssToFabricGradient } from './utils'
+import { cssToFabricGradient } from './utils/utils'
 import Menu from './menu/menu'
 import { plugins } from './plugins'
+import { initConfig } from './share/initConfig'
 
 const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor']
 
@@ -17,6 +18,7 @@ class Workspace {
     this.canvas.share = {}
     this.canvasWidth = canvas.width
     this.canvasHeight = canvas.height
+    initConfig(canvas)
     this._initPlugins()
     this.initRect()
   }
