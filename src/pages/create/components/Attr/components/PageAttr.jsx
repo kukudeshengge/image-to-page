@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
-import { Radio, Slider, InputNumber, Row, Col, Button, Popover } from 'antd'
+import { Radio, Slider, InputNumber, Row, Col, Button } from 'antd'
 import { bgColorList, filterList, linearBgColorList } from '../config'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../store/create'
@@ -49,7 +49,7 @@ const PageAttr = (props) => {
   const { attrScroll } = props
   const { workspace } = createStore
   const pageStore = createStore.getCurrentPage()
-  const { rectColor, pageAngle, opacity, filterKey,showAllFilter } = pageStore
+  const { rectColor, pageAngle, opacity, filterKey, showAllFilter, audio } = pageStore
   const disabledAngle = rectColor.type !== 'bg-linear'
   const [bgType, setBgType] = useState(rectColor.type === 'bg-linear' ? 1 : 0)
   // bg color type change
@@ -105,6 +105,10 @@ const PageAttr = (props) => {
   const onChangeShowAllFilter = () => {
     pageStore.showAllFilter = !showAllFilter
     setTimeout(() => attrScroll.refresh())
+  }
+  // 修改背景音乐
+  const changeAudio = () => {
+    workspace.add.addAudio()
   }
   const renderFilterList = showAllFilter ? filterList : filterList.slice(0, 6)
   
@@ -184,7 +188,7 @@ const PageAttr = (props) => {
           />
         </Col>
       </Row>
-      <Row justify='center'>
+      <Row justify="center">
         <Button onClick={createStore.applyBackground}>将背景应用于所有页面</Button>
       </Row>
       <div className={cs('page-attr-share-title')} style={{ margin: '30px 0 20px 0' }}>
@@ -214,9 +218,18 @@ const PageAttr = (props) => {
       </div>
       <div className={cs('audio-wrap')}>
         <Button
-          icon={<img src="https://ossprod.jrdaimao.com/file/1721187497059765.svg" alt=""/>}
+          onClick={changeAudio}
+          icon={
+            <img src={audio.name ?
+              'https://ossprod.jrdaimao.com/file/1721981317694292.svg' :
+              'https://ossprod.jrdaimao.com/file/1721187497059765.svg'}
+                 alt=""
+            />
+          }
         >
-          添加页面音乐
+          {
+            audio.name ? audio.name : '添加页面音乐'
+          }
         </Button>
       </div>
     </div>

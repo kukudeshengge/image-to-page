@@ -7,6 +7,7 @@ import EditLoading, { getBg } from './EditLoading'
 import { fabric } from 'fabric'
 import { Tooltip } from 'antd'
 import { loadingList } from '../config'
+import { WorkspaceId } from '../../../../../config/name'
 
 const cs = classNames.bind(styles)
 
@@ -27,7 +28,7 @@ const ThumbCanvas = observer(({ data }) => {
   const loadFromJSON = async () => {
     if (!canvas.current) return
     await canvas.current.loadFromJSON(data.canvasData)
-    const rect = canvas.current.getObjects().find(item => item.id === 'workspace')
+    const rect = canvas.current.getObjects().find(item => item.id === WorkspaceId)
     const width = container.current.clientWidth
     const height = container.current.clientHeight
     const thumbZoom = width / 375
@@ -73,6 +74,11 @@ const PageList = () => {
     createStore.copyPage(index)
   }
   
+  const saveItem = (e) => {
+    e.stopPropagation()
+    createStore.savePage()
+  }
+  
   const LoadingCom = useMemo(() => {
     const item = loadingList.find(item => item.type === loadingPage.dotType)
     const Com = item.com
@@ -112,10 +118,11 @@ const PageList = () => {
         </div>
       </div>
       {pageList.map((item, index) => {
+        const active = index === pageIndex
         return <div
           onClick={() => onChangePage(index)}
           key={item.id}
-          className={cs({ 'page-list-item': true, active: index === pageIndex })}
+          className={cs({ 'page-list-item': true, active })}
         >
           <div className={cs('page-list-item-left')}>
             <div>{index + 1}</div>
@@ -131,6 +138,14 @@ const PageList = () => {
             </div>
           </div>
           <div className={cs('page-list-item-right')}>
+            {
+              active ? <Tooltip title="下载当前页面" placement="left" overlayClassName={cs('page-list-tip')}>
+                <span onClick={(e) => saveItem(e)}>
+                  <img src="https://ossprod.jrdaimao.com/file/1721986915927352.svg" alt=""/>
+                  <img src="https://ossprod.jrdaimao.com/file/1721986927339843.svg" alt=""/>
+                </span>
+              </Tooltip> : null
+            }
             <Tooltip title="复制当前页面" placement="left" overlayClassName={cs('page-list-tip')}>
                 <span onClick={(e) => copyItem(e, index)}>
                   <img src="https://ossprod.jrdaimao.com/file/1721701429040381.svg" alt=""/>

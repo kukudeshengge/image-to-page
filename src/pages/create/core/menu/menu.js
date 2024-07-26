@@ -2,6 +2,7 @@ import createMenu from './createMenu'
 import './menu.less'
 import Base from '../plugins/Base'
 import { getMenuFunc } from '../utils/utils'
+import { WorkspaceId } from '../../../../config/name'
 
 class Menu extends Base {
   menuEl = null
@@ -26,7 +27,7 @@ class Menu extends Base {
     if (!menus || !menus.length || this.menuEl) return
     this.object = e.target
     this.objectBoundingRect = e.target.getBoundingRect(true)
-    if (e.target && e.target.id !== 'workspace') {
+    if (e.target && e.target.id !== WorkspaceId) {
       this.canvas.setActiveObject(e.target).renderAll()
     }
     this.menuEl = document.createElement('div')
@@ -81,7 +82,7 @@ class Menu extends Base {
       object = activeObject
     } else {
       object = e.target
-      if (object && object.id !== 'workspace') {
+      if (object && object.id !== WorkspaceId) {
         this.canvas.setActiveObject(object)
       }
     }

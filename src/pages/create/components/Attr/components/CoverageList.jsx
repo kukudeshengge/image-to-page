@@ -5,13 +5,18 @@ import { Empty } from 'antd'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../store/create'
 import { fabric } from 'fabric'
+import { HoverBorderId, WorkspaceId } from '../../../../../config/name'
 
 const cs = classNames.bind(styles)
 
 const ObjectThumb = ({ object }) => {
   const [image, setImage] = useState('')
+  const [isVideo, setIsVideo] = useState(false)
   
   useEffect(() => {
+    if (object.videoUrl) {
+      return setIsVideo(true)
+    }
     try {
       const name = object.type[0].toUpperCase() + object.type.slice(1)
       fabric[name].fromObject(object, object => {
@@ -25,7 +30,9 @@ const ObjectThumb = ({ object }) => {
       console.log(err)
     }
   }, [object])
-  
+  if (isVideo) {
+    return '视频'
+  }
   if (!image) return null
   return <img style={{ zoom: '0.5' }} src={image} alt=""/>
 }
@@ -44,7 +51,7 @@ const CoverageList = () => {
   const list = useMemo(() => {
     if (!page.canvasData || !page.canvasData.objects) return []
     return page.canvasData.objects.filter(item => {
-      return item.id !== 'workspace'
+      return item.id !== WorkspaceId && item.id !== HoverBorderId
     })
   }, [page.canvasData])
   // get object
@@ -64,15 +71,19 @@ const CoverageList = () => {
   // 选择
   const changeSelect = (item) => {
     const object = getObject(item.id)
+    if (!object) return
     workspace.hoverBorder.clearBorder()
     canvas.setActiveObject(object).renderAll()
   }
+  // 鼠标提出清空border
   const onMouseLeave = () => {
     workspace.hoverBorder.clearBorder()
   }
+  // 鼠标移入增加border
   const onMouseEnter = (item) => {
     const object = getObject(item.id)
-    workspace.hoverBorder.drawRect(object)
+    if (!object) return
+    workspace.hoverBorder.drawBorder(object)
   }
   return (
     <div className={cs('coverage-list')}>

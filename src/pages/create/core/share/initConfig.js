@@ -4,7 +4,7 @@ import { initAligningGuidelines } from './fabricGuide'
 export const initConfig = (canvas) => {
   initStyle()
   initControls()
-  initAligningGuidelines(canvas)
+  // initAligningGuidelines(canvas)
 }
 
 const initStyle = () => {

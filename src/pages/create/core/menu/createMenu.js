@@ -1,4 +1,5 @@
 import { createStore } from '../../../../store/create'
+import { WorkspaceId } from '../../../../config/name'
 
 export const MenuKeys = {
   CUT: {
@@ -155,14 +156,14 @@ export const shareMenus = [
 export const imageMenus = [
   {
     text: '替换图片',
-    fn: 'clipImage.replaceImage',
+    fn: 'tools.replaceImage',
     id: 'replaceImage'
   },
-  {
-    text: '剪裁图片',
-    fn: 'clipImage.startClip',
-    id: 'startClip'
-  }
+  // {
+  //   text: '剪裁图片',
+  //   fn: 'clipImage.startClip',
+  //   id: 'startClip'
+  // }
 ]
 // 文字私有菜单
 export const textMenus = [
@@ -194,9 +195,14 @@ export const combinationMenus = [
 
 const createMenu = ({ activeObject }) => {
   if (!activeObject) return null
-  const beforeMenu = activeObject.type === 'group' ? combinationMenus[1] : combinationMenus[0]
-  let menus = [beforeMenu, ...shareMenus]
-  if (activeObject.id === 'workspace') {
+  let beforeMenu = []
+  if (activeObject.isType("activeSelection")) {
+    beforeMenu = [combinationMenus[0]]
+  }else if (activeObject.isType('group')) {
+    beforeMenu = [combinationMenus[1]]
+  }
+  let menus = [...beforeMenu, ...shareMenus]
+  if (activeObject.id === WorkspaceId) {
     menus = blankMenus
   } else if (activeObject.type === 'image') {
     menus = [...shareMenus, ...imageMenus]

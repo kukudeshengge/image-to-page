@@ -13,15 +13,14 @@ const Nav = () => {
   const onChangeNavKey = (item) => {
     createStore.navActiveKey = item.type
   }
-  const onFilterChange =(item) => {
+  const onFilterChange = (item) => {
     createStore.filterActiveKey = item.value
   }
   useEffect(() => {
-    const scroll = new IScroll('#right-nav-content', {
+    createStore.scroll = new IScroll('#right-nav-content', {
       mouseWheel: true,
       scrollbars: true
     })
-    createStore.scroll = scroll
   }, [])
   
   const Component = ComEnum[navActiveKey]
@@ -33,8 +32,8 @@ const Nav = () => {
           navList.map(item => {
             const active = navActiveKey === item.type
             return <div onClick={() => onChangeNavKey(item)} key={item.type} className={cs({ active })}>
-              <img src={item.icon} alt=""/>
-              <img src={item.activeIcon} alt=""/>
+              <img draggable={false} src={item.icon} alt=""/>
+              <img draggable={false} src={item.activeIcon} alt=""/>
               <span>{item.title}</span>
             </div>
           })

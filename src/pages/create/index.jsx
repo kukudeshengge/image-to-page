@@ -8,32 +8,37 @@ import Nav from './components/Nav'
 import Draw from './components/Draw'
 import Attr from './components/Attr'
 import { observer } from 'mobx-react-lite'
-import { fabric } from 'fabric'
 import { createStore } from '../../store/create'
-import { v4 as uuid } from 'uuid'
+import DownloadPage from './components/DownloadPage'
 
 const cs = classNames.bind(styles)
 
 const Create = () => {
-  const { canvas } = createStore
+  const { workspace } = createStore
   const nav = useNavigate()
   const goBack = () => {
     nav(-1)
+  }
+  const addObject = item => {
+    const name = `add${item.type[0].toUpperCase() + item.type.slice(1)}`
+    const func = workspace.add[name]
+    if (!func) return
+    func()
   }
   return (
     <div className={cs('create')}>
       <div className={cs('header')}>
         <div className={cs('back')} onClick={goBack}>
-          <img src="https://ossprod.jrdaimao.com/file/1721035943933168.svg" alt=""/>
-          <img src="https://ossprod.jrdaimao.com/file/1721036074203577.svg" alt=""/>
+          <img draggable={false} src="https://ossprod.jrdaimao.com/file/1721035943933168.svg" alt=""/>
+          <img draggable={false} src="https://ossprod.jrdaimao.com/file/1721036074203577.svg" alt=""/>
           <span>返回</span>
         </div>
         <div className={cs('header-center')}>
           {
             tools.map(item => {
-              return <div key={item.type}>
-                <img src={item.icon} alt=""/>
-                <img src={item.activeIcon} alt=""/>
+              return <div onClick={() => addObject(item)} key={item.type}>
+                <img draggable={false} src={item.icon} alt=""/>
+                <img draggable={false} src={item.activeIcon} alt=""/>
                 <span>{item.title}</span>
               </div>
             })
@@ -50,6 +55,7 @@ const Create = () => {
         <Draw/>
         <Attr/>
       </div>
+      {/*<DownloadPage/>*/}
     </div>
   )
 }

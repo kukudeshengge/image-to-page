@@ -10,7 +10,7 @@ class Order extends Base {
     object && object[funcKey]?.()
     this.canvas.renderAll()
     createStore.modifiedCanvas()
-    // this.editor?.workspaceSendToBack()
+    this.workspace.workspaceSendToBack()
   }
   
   // 上

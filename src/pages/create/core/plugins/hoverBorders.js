@@ -1,10 +1,11 @@
 import { fabric } from 'fabric'
 import Base from './Base'
+import { WorkspaceId } from '../../../../config/name'
 
 /**
  * 对象获得焦点后在外围显示一个边框
  */
-class HoverBorder extends Base{
+class HoverBorder extends Base {
   canvasEvents = {}
   hoveredTarget
   rect = null
@@ -21,17 +22,18 @@ class HoverBorder extends Base{
   }
   
   drawBorder = (e) => {
-    if (!e.target || e.target.id === 'workspace') return
+    if (!e) return
+    const target = e.e ? e.target : e
+    if (!target || target.id === WorkspaceId) return
     if (this.rect) return
-    if (e.target.isType('activeSelection')) return
-    this.drawRect(e.target)
-  }
-  drawRect = (target) => {
+    if (target.isType('activeSelection')) return
     const activeObjects = this.canvas.getActiveObjects()
     if (activeObjects.find(item => item === target)) return
+    
     this.hoveredTarget = target
     const { left, top, width, height } = this.hoveredTarget.getBoundingRect(true)
     this.rect = new fabric.Rect({
+      id: 'hoverBorder',
       width: width + 10,
       height: height + 10,
       left: left - 5,
@@ -47,7 +49,6 @@ class HoverBorder extends Base{
     this.canvas.add(this.rect)
     this.canvas.renderAll()
   }
-  
   clearBorder = () => {
     this.canvas.remove(this.rect)
     this.rect = null

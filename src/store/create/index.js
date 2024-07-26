@@ -1,13 +1,15 @@
 import { makeAutoObservable } from 'mobx'
 import { PageItemStore } from './pageItem'
 import { message } from 'antd'
+import { saveAs } from 'file-saver'
+import { v4 as uuid } from 'uuid'
 
 class CreateStore {
   scroll = null
   attrScroll = null
   navActiveKey = 'image-text'
   filterActiveKey = 0
-  attrActiveKey = 1
+  attrActiveKey = 2
   editPageLoadingModal = false
   canvas = null
   workspace = null
@@ -25,7 +27,6 @@ class CreateStore {
   
   constructor () {
     makeAutoObservable(this)
-    // this.createThumbImage = throttle(this.createThumbImage, 50)
   }
   
   init = (canvas, workspace) => {
@@ -36,17 +37,14 @@ class CreateStore {
   render = () => {
     this.modifiedCanvas()
     this.canvas.on('object:modified', this.modifiedCanvas)
-    // const that = this
-    // fabric.util.requestAnimFrame(function render () {
-    //   that.canvas.renderAll()
-    //   that.createThumbImage()
-    //   fabric.util.requestAnimFrame(render)
-    // })
   }
   modifiedCanvas = () => {
     console.log('modifiedCanvas')
     const pageItem = this.getCurrentPage()
     pageItem.canvasData = this.workspace.toObject()
+    if (this.attrActiveKey === 1) {
+      setTimeout(() => this.attrScroll.refresh())
+    }
   }
   getCurrentPage = () => {
     return this.pageList[this.pageIndex]
@@ -96,6 +94,10 @@ class CreateStore {
     this.pageIndex = index + 1
     this.workspace.loadFromJSON(copyPage)
     setTimeout(() => this.attrScroll.refresh())
+  }
+  savePage = () => {
+    const image = this.workspace.toImage()
+    saveAs(image, uuid())
   }
   // 应用背景到所有页面
   applyBackground = () => {

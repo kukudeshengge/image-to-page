@@ -89,7 +89,6 @@ class Tools extends Base {
     this.canvas.renderAll()
     createStore.modifiedCanvas()
   }
-  
   /**
    * 锁定全部操作 或 解锁全部操作
    * @param object
@@ -152,6 +151,14 @@ class Tools extends Base {
     }
     this.canvas.discardActiveObject().renderAll()
     createStore.modifiedCanvas()
+  }
+  // 替换图片
+  replaceImage = () => {
+    const object = this.canvas.getActiveObject()
+    // object.setSrc(url, () => {
+    //   this.canvas.renderAll()
+    //   events.emit(Types.SHOW_LOADING, false)
+    // })
   }
 }
 

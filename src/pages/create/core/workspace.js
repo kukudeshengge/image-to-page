@@ -3,8 +3,9 @@ import { cssToFabricGradient } from './utils/utils'
 import Menu from './menu/menu'
 import { plugins } from './plugins'
 import { initConfig } from './share/initConfig'
+import { WorkspaceId } from '../../../config/name'
 
-const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor']
+const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl']
 
 class Workspace {
   canvas = null
@@ -40,7 +41,7 @@ class Workspace {
     const width = this.rectWidth
     const height = this.rectHeight
     const rect = new fabric.Rect({
-      id: 'workspace',
+      id: WorkspaceId,
       width,
       height,
       fill: '#fff',
@@ -101,19 +102,26 @@ class Workspace {
     }, '')
   }
   
+  workspaceSendToBack = () => {
+    const rect = this.getRect()
+    rect.sendToBack()
+  }
+  
   // 获取图片
   toImage () {
     const rect = this.getRect()
     const { left, top, width, height } = rect
-    const option = {
-      format: 'png',
+    const viewportTransform = this.canvas.viewportTransform
+    
+    const result = this.canvas.toDataURL({
+      format: 'jpeg',
       quality: 1,
-      left,
-      top,
-      width,
-      height
-    }
-    return this.canvas.toDataURL(option)
+      left: left + viewportTransform[4],
+      top: top + viewportTransform[5],
+      width: width,
+      height: height
+    })
+    return result
   }
   
   toObject () {
