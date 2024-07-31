@@ -15,6 +15,9 @@ class Menu extends Base {
   }
   
   initEvent () {
+    document.addEventListener('contextmenu',e => {
+      e.preventDefault();
+    })
     this.canvas.on('mouse:down', e => {
       if (e.button !== 3) return this.removeMenu()
       this.renderMenu(e)

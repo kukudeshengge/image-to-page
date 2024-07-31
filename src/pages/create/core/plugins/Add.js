@@ -80,11 +80,12 @@ class Add extends Base {
   addImage = async () => {
     if (this.uploading) return
     try {
-      const e = await uploadFile({ accept: imageTypes })
-      const [file] = e.target.files
-      if (!file) return
-      this.openUploadLoading()
-      const { url } = await IMGCLIENT.upload(file)
+      // const e = await uploadFile({ accept: imageTypes })
+      // const [file] = e.target.files
+      // if (!file) return
+      // this.openUploadLoading()
+      // const { url } = await IMGCLIENT.upload(file)
+      const url = 'https://img0.baidu.com/it/u=1929577121,3484200313&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500'
       fabric.Image.fromURL(url, img => {
         const { scaleX, scaleY } = this.getImageScale(img)
         img.set({

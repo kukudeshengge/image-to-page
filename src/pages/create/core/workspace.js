@@ -131,6 +131,7 @@ class Workspace {
   // 加载json
   loadFromJSON (data) {
     this.setRectFilter({ style: data.filterStyle })
+    this.canvas.discardActiveObject()
     this.canvas.loadFromJSON(data.canvasData)
   }
 }

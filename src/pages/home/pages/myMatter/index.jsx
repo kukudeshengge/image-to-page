@@ -75,7 +75,7 @@ const MyMatter = () => {
               <div onClick={matterStore.openUpload} className={cs('upload-btn')}>上传素材</div>
             </Popover>
             {
-              batchMode ? <div className={cs('batch-handle')}>
+              batchMode ? <div className={cs('batch-Handle')}>
                 <Checkbox checked={allChecked} onChange={onChangeCheckAll}>全选</Checkbox>
                 <span onClick={deleteMatter} style={batchBtnStyle}>删除</span>
                 <span onClick={matterStore.closeBatchMode}>完成</span>
