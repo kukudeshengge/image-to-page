@@ -1,0 +1,165 @@
+.text-attr {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.select-style {
+  width: 165px;
+  box-sizing: border-box;
+}
+
+.item-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.title {
+  color: #333333;
+  font-size: 14px;
+}
+
+.size {
+  width: 165px;
+  display: flex;
+
+  .select-size {
+    width: 90px;
+  }
+
+  > span {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+
+    &:hover {
+      border-color: #1261ff;
+    }
+
+    &.add-size-btn {
+      margin: 0 5px;
+    }
+
+    img {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+.color-wrap {
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+  box-sizing: content-box;
+  height: 32px;
+
+  .color-view {
+    display: inline-block;
+    width: 80px;
+    height: 32px;
+    background: red;
+  }
+
+  .color-icon {
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    background: #f5f7fb;
+    position: relative;
+
+    img {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+.text-format-wrap {
+  height: 32px;
+  border-radius: 6px;
+
+  span {
+    height: 100%;
+    flex: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e6ebed;
+
+    &:hover {
+      color: #1261ff;
+    }
+
+    &:not(:last-child) {
+      border-right: none;
+    }
+
+    &:first-child {
+      border-radius: 6px 0 0 6px;
+    }
+
+    &:last-child {
+      border-radius: 0 6px 6px 0;
+    }
+  }
+}
+
+.fast-handle-wrap {
+  position: relative;
+
+  .fast-handle-item {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex: 1;
+    background: #f5f5f5;
+  }
+}
+.fast-handle-item-wrap {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  left: 0;
+  height: 56px;
+  background: #fff;
+  box-shadow: 0 0 4px 0 rgba(0,0,0,.16);
+  top: 32px;
+}
+.align-fix {
+  display: flex;
+  div {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    margin: 0 3px;
+    border-radius: 3px;
+  }
+}
+.space-fix {
+  display: flex;
+  align-items: center;
+  > span {
+    margin-right: 10px;
+    color: #333333;
+    font-size: 14px;
+  }
+}

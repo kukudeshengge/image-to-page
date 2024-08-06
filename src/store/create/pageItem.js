@@ -17,7 +17,6 @@ export class PageItemStore {
     name: '',
     src: ''
   }
-  
   constructor () {
     makeAutoObservable(this)
   }

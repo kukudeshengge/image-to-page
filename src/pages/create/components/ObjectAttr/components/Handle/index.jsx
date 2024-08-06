@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './index.module.less';
 import classNames from "classnames/bind";
 import {triggeredList} from "./config";
@@ -9,29 +9,39 @@ import {Input} from "antd";
 const cs = classNames.bind(styles)
 
 const Handle = () => {
-    const {canvas, pageList, objectTriggered} = createStore
-    const activeObject = canvas?.getActiveObject() || {}
-    const cache = objectTriggered[activeObject.id || ''] || {triggeredType: 0}
+    const {canvas, pageList, selectObjects} = createStore
+    const [cache, setCache] = useState({triggeredType: 0})
+
+    useEffect(() => {
+        if (!canvas) return
+        const activeObject = canvas.getActiveObject() || {}
+        if (!activeObject) return
+        setCache(activeObject.triggered || {triggeredType: 0})
+    }, [selectObjects])
 
     const changeTriggered = item => {
+        const activeObject = canvas.getActiveObject()
         if (!activeObject || !activeObject.id) return
-        createStore.objectTriggered = {
-            [activeObject.id]: {
-                title: item.title,
-                triggeredType: item.value,
-                type: item.type,
-                inputProps: item.inputProps,
-                value: null
-            }
+        const value = {
+            title: item.title,
+            triggeredType: item.value,
+            type: item.type,
+            inputProps: item.inputProps,
+            value: null
         }
+        activeObject.triggered = value
+        setCache(value)
+        createStore.modifiedCanvas()
     }
 
     const onChange = e => {
-        const id = activeObject.id
-        createStore.objectTriggered[id] = {
-            ...createStore.objectTriggered[id],
-            value: e.target.value
-        }
+        const activeObject = canvas.getActiveObject()
+        if (!activeObject || !activeObject.triggered) return
+        activeObject.triggered.value = e
+        setCache(prevState => ({
+            ...prevState,
+            value: e
+        }))
     }
 
     return (
@@ -60,9 +70,8 @@ const Handle = () => {
                         {
                             cache.type === 'input' ?
                                 <Input
-                                    ref={e => e?.focus()}
                                     value={cache.value}
-                                    onChange={onChange}
+                                    onChange={e => onChange(e.target.value)}
                                     {...cache.inputProps}
                                 /> :
                                 cache.type === 'jumpPage' ?
@@ -72,7 +81,7 @@ const Handle = () => {
                                                     return <span
                                                         className={cs({active: index === cache.value})}
                                                         key={item.id}
-                                                        onClick={() => onChange({target: {value: index}})}
+                                                        onClick={() => onChange(index)}
                                                     >
                                                         {index + 1}
                                                     </span>

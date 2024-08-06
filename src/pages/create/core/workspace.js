@@ -5,7 +5,7 @@ import { plugins } from './plugins'
 import { initConfig } from './share/initConfig'
 import { WorkspaceId } from '../../../config/name'
 
-const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl']
+const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl', 'triggered']
 
 class Workspace {
   canvas = null

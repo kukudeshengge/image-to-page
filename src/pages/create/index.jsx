@@ -57,9 +57,7 @@ const Create = () => {
                 <Attr/>
             </div>
             {/*<DownloadPage/>*/}
-            <ObjectAttr>
-                <div style={{width: 200, height: 200, background: 'red'}}></div>
-            </ObjectAttr>
+            <ObjectAttr/>
         </div>
     )
 }

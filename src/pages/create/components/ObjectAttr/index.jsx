@@ -9,7 +9,7 @@ import IScroll from 'iscroll'
 const cs = classNames.bind(styles)
 
 const MoveWrap = () => {
-    const {comSettingActiveKey} = createStore
+    const {comSettingActiveKey, showComSetting} = createStore
     const scroll = useRef(null)
     const moveEl = useRef(null)
     const moveing = useRef(false)
@@ -22,14 +22,15 @@ const MoveWrap = () => {
     }
 
     useEffect(() => {
+        if (!showComSetting) return
         scroll.current = new IScroll('#object-attr-scroll', {
             mouseWheel: true,
             scrollbars: true,
             click: true,
             preventDefault: false
         })
-        const defaultX = localStorage.getItem('ObjectAttrX')
-        const defaultY = localStorage.getItem('ObjectAttrY')
+        const defaultX = sessionStorage.getItem('ObjectAttrX')
+        const defaultY = sessionStorage.getItem('ObjectAttrY')
         if (defaultX && defaultY) {
             moveEl.current.style.left = defaultX
             moveEl.current.style.top = defaultY
@@ -40,7 +41,7 @@ const MoveWrap = () => {
             window.removeEventListener('mousemove', mouseMove)
             window.removeEventListener('mouseup', mouseUp)
         }
-    }, [])
+    }, [showComSetting])
 
     const mouseMove = (e) => {
         if (!moveing.current) return
@@ -61,21 +62,24 @@ const MoveWrap = () => {
     }
     const mouseUp = () => {
         moveing.current = false
-        localStorage.setItem('ObjectAttrX', moveEl.current.style.left)
-        localStorage.setItem('ObjectAttrY', moveEl.current.style.top)
+        sessionStorage.setItem('ObjectAttrX', moveEl.current.style.left)
+        sessionStorage.setItem('ObjectAttrY', moveEl.current.style.top)
     }
     const mouseDown = (e) => {
         diffX.current = e.clientX - moveEl.current.offsetLeft
         diffY.current = e.clientY - moveEl.current.offsetTop
         moveing.current = true
     }
-
+    const close = () => {
+        createStore.showComSetting = false
+    }
     const Com = tabCom[comSettingActiveKey]
+    if (!showComSetting) return null
     return (
         <div className={cs('move-wrap')} ref={moveEl}>
             <div className={cs('move-wrap-title')} onMouseDown={mouseDown}>
                 <span>组件设置</span>
-                <img src="https://ossprod.jrdaimao.com/file/1722406824491386.svg" alt=""/>
+                <img onClick={close} src="https://ossprod.jrdaimao.com/file/1722406824491386.svg" alt=""/>
             </div>
             <div className={cs('tab')}>
                 {
