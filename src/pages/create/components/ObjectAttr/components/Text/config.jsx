@@ -33,7 +33,7 @@ export const textFormatList = [
         title: '正文',
         id: 3,
         style: {
-            fontWeight: 400,
+            fontWeight: 500,
             fontSize: 14
         }
     }
@@ -44,19 +44,19 @@ const alignList = [
     {
         title: '左对齐',
         image: 'https://ossprod.jrdaimao.com/file/1722910884719362.svg',
-        selectedImage: 'https://ossprod.jrdaimao.com/file/1722911299958221.svg',
+        selectedImage: 'https://ossprod.jrdaimao.com/file/1722930520857452.svg',
         type: 'left'
     },
     {
         title: '居中对齐',
-        image: 'https://ossprod.jrdaimao.com/file/1722910922139861.svg',
-        selectedImage: 'https://ossprod.jrdaimao.com/file/1722911314260985.svg',
-        type: 'center'
+        image: 'https://ossprod.jrdaimao.com/file/1722930699599354.svg',
+        selectedImage: 'https://ossprod.jrdaimao.com/file/1722930536114554.svg',
+        type: 'justify-center'
     },
     {
         title: '右对齐',
         image: 'https://ossprod.jrdaimao.com/file/1722910937194273.svg',
-        selectedImage: 'https://ossprod.jrdaimao.com/file/1722911322746407.svg',
+        selectedImage: 'https://ossprod.jrdaimao.com/file/1722930546282604.svg',
         type: 'right'
     }
 ]
@@ -65,33 +65,45 @@ export const textFastHandleList = [
     {
         title: '加粗',
         type: 'weight',
-        image: 'https://ossprod.jrdaimao.com/file/1722853212066674.svg'
+        image: 'https://ossprod.jrdaimao.com/file/1722853212066674.svg',
+        selectImage: 'https://ossprod.jrdaimao.com/file/1722929490859526.svg'
     },
     {
         title: '斜体',
         type: 'italic',
-        image: 'https://ossprod.jrdaimao.com/file/172285322046417.svg'
+        image: 'https://ossprod.jrdaimao.com/file/172285322046417.svg',
+        selectImage: 'https://ossprod.jrdaimao.com/file/1722929500239927.svg'
     },
     {
         title: '下划线',
         type: 'underline',
-        image: 'https://ossprod.jrdaimao.com/file/1722853227215429.svg'
+        image: 'https://ossprod.jrdaimao.com/file/1722853227215429.svg',
+        selectImage: 'https://ossprod.jrdaimao.com/file/1722929509703255.svg'
     },
     {
         title: '删除线',
-        type: 'line-through',
-        image: 'https://ossprod.jrdaimao.com/file/1722853233547868.svg'
+        type: 'linethrough',
+        image: 'https://ossprod.jrdaimao.com/file/1722853233547868.svg',
+        selectImage: 'https://ossprod.jrdaimao.com/file/1722929518387331.svg'
     },
     {
         title: '对齐方式',
         type: 'align',
-        image: 'https://ossprod.jrdaimao.com/file/1722853242080528.svg',
-        renderContent: () => <div className={cs('align-fix')}>
+        image: 'https://ossprod.jrdaimao.com/file/1722930699599354.svg',
+        renderContent: ({onClick, getFastHandleActive}) => <div className={cs('align-fix')}>
             {
                 alignList.map(item => {
-                    return <Tooltip key={item.type} title={item.title} placement={"top"}>
-                        <div key={item.type}>
-                            <img src={item.image} alt=""/>
+                    const active = getFastHandleActive(item);
+                    return <Tooltip
+                        key={item.type}
+                        title={item.title}
+                        placement={"top"}
+                    >
+                        <div
+                            onClick={(e) => onClick(e, item)}
+                            key={item.type}
+                        >
+                            <img src={active ? item.selectedImage : item.image} alt=""/>
                         </div>
                     </Tooltip>
                 })

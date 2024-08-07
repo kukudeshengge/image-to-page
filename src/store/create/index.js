@@ -25,7 +25,7 @@ class CreateStore {
         new PageItemStore()
     ]
     pageIndex = 0
-    comSettingActiveKey = 0
+    comSettingActiveKey = 1
     showComSetting = false
     constructor() {
         makeAutoObservable(this)
