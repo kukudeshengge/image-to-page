@@ -1,3 +1,31 @@
 .down-load-page {
   padding: 20px;
+  display: flex;
+  height: 400px;
+}
+
+.setting-left {
+  width: 300px;
+
+  :global {
+    .ant-input {
+      border: none;
+      background: none;
+      cursor: default;
+    }
+  }
+}
+
+.preview-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  :global {
+    .ant-image {
+      width: 198px;
+      height: 352px;
+      border: solid 1px #cccccc;
+    }
+  }
 }

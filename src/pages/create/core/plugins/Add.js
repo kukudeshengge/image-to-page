@@ -77,7 +77,7 @@ class Add extends Base {
     this.uploading = false
   }
   // 新增图片
-  addImage = async () => {
+  uploadImage = async () => {
     if (this.uploading) return
     try {
       const e = await uploadFile({ accept: imageTypes })
@@ -103,7 +103,7 @@ class Add extends Base {
     }
   }
   // 新增音频
-  addAudio = async () => {
+  uploadAudio = async () => {
     if (this.uploading) return
     try {
       const e = await uploadFile({ accept: audioTypes })
@@ -124,51 +124,59 @@ class Add extends Base {
       message.warning(err.message)
     }
   }
-  // 新增视频
-  addVideo = async () => {
+  // 上传视频
+  uploadVideo = async () => {
     if (this.uploading) return
     try {
-      const e = await uploadFile({ accept: videoTypes })
-      const [file] = e.target.files
-      if (!file) return
-      this.openUploadLoading()
-      const { url } = await IMGCLIENT.upload(file)
-      // const url = 'https://osstest.jrdaimao.com/file/dm_edit_image/1721982477322573.mp4'
-      const videoEl = document.createElement('video')
-      videoEl.loop = true
-      videoEl.crossOrigin = 'anonymous'
-      videoEl.controls = true
-      videoEl.style.display = 'none'
-      
-      const sourceEl = document.createElement('source')
-      sourceEl.src = url
-      videoEl.appendChild(sourceEl)
-      videoEl.addEventListener('loadeddata', () => {
-        videoEl.width = videoEl.videoWidth
-        videoEl.height = videoEl.videoHeight
-        const { scaleX, scaleY } = this.getImageScale(videoEl)
-        const video = new fabric.Image(videoEl, {
-          videoUrl: url,
-          objectCaching: false,
-          scaleX,
-          scaleY
-        })
+      // const e = await uploadFile({ accept: videoTypes })
+      // const [file] = e.target.files
+      // if (!file) return
+      // this.openUploadLoading()
+      // const { url } = await IMGCLIENT.upload(file)
+      const url = 'https://osstest.jrdaimao.com/file/dm_edit_image/1721982477322573.mp4'
+      this.addVideo(url, (video) => {
         this.canvas.add(video).setActiveObject(video)
         this.workspace.align.center()
-        const videoSource = video.getElement()
-        videoSource.play()
-        const that = this
         this.closeUploadLoading()
-        fabric.util.requestAnimFrame(function render () {
-          that.canvas.renderAll()
-          fabric.util.requestAnimFrame(render)
-        })
       })
     } catch (err) {
       console.log(err)
       this.closeUploadLoading()
       message.warning(err.message)
     }
+  }
+  // 新增视频
+  addVideo = (url, callback) => {
+    if (!url) return
+    const videoEl = document.createElement('video')
+    videoEl.loop = true
+    videoEl.crossOrigin = 'anonymous'
+    videoEl.controls = true
+    videoEl.style.display = 'none'
+    
+    const sourceEl = document.createElement('source')
+    sourceEl.src = url
+    videoEl.appendChild(sourceEl)
+    videoEl.addEventListener('loadeddata', () => {
+      videoEl.width = videoEl.videoWidth
+      videoEl.height = videoEl.videoHeight
+      const { scaleX, scaleY } = this.getImageScale(videoEl)
+      const video = new fabric.Image(videoEl, {
+        id: uuid(),
+        videoUrl: url,
+        objectCaching: false,
+        scaleX,
+        scaleY
+      })
+      const videoSource = video.getElement()
+      videoSource.play()
+      const that = this
+      callback && callback(video)
+      fabric.util.requestAnimFrame(function render () {
+        that.canvas.renderAll()
+        fabric.util.requestAnimFrame(render)
+      })
+    })
   }
 }
 

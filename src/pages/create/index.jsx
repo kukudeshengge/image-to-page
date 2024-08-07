@@ -20,8 +20,7 @@ const Create = () => {
     nav(-1)
   }
   const addObject = item => {
-    const name = `add${item.type[0].toUpperCase() + item.type.slice(1)}`
-    const func = workspace.add[name]
+    const func = workspace.add[item.type]
     if (!func) return
     func()
   }
@@ -55,7 +54,7 @@ const Create = () => {
         <Draw/>
         <Attr/>
       </div>
-      {/*<DownloadPage/>*/}
+      <DownloadPage/>
     </div>
   )
 }

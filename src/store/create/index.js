@@ -24,6 +24,7 @@ class CreateStore {
     new PageItemStore()
   ]
   pageIndex = 0
+  openSaveModal = false
   
   constructor () {
     makeAutoObservable(this)
@@ -96,8 +97,7 @@ class CreateStore {
     setTimeout(() => this.attrScroll.refresh())
   }
   savePage = () => {
-    const image = this.workspace.toImage()
-    saveAs(image, uuid())
+    createStore.openSaveModal = true
   }
   // 应用背景到所有页面
   applyBackground = () => {

@@ -13,6 +13,7 @@ const lockAttrs = [
   'selectable',
   'editable'
 ]
+
 /**
  * 一些常用工具
  */
@@ -26,7 +27,7 @@ class Tools extends Base {
     if (!object) return
     object.clone(cloned => {
       this.cloneObject = cloned
-    })
+    }, ['videoUrl'])
   }
   /**
    * 剪切对象
@@ -46,7 +47,7 @@ class Tools extends Base {
   pasteObject = () => {
     if (!this.cloneObject) return
     const { mousePointer } = this.workspace.events
-    if (this.cloneObject.type === 'activeSelection') {
+    if (this.cloneObject.isType('activeSelection')) {
       this.cloneObject.clone(cloned => {
         cloned.canvas = this.canvas
         const left = this.cloneObject.left + 10
@@ -62,7 +63,19 @@ class Tools extends Base {
         createStore.modifiedCanvas()
       })
     } else {
+      if (this.cloneObject.videoUrl) {
+        this.workspace.add.addVideo(this.cloneObject.videoUrl, (video) => {
+          video.set({
+            left: mousePointer.x,
+            top: mousePointer.y
+          })
+          this.canvas.add(video).setActiveObject(video).renderAll()
+          createStore.modifiedCanvas()
+        })
+        return
+      }
       this.cloneObject.clone(cloned => {
+        cloned.canvas = this.canvas
         cloned.set({
           id: uuid(),
           left: mousePointer.x,

@@ -47,7 +47,8 @@ class Workspace {
       fill: '#fff',
       selectable: false,
       controls: false,
-      hoverCursor: 'default'
+      hoverCursor: 'default',
+      objectCaching: true
       // shadow: {
       //   color: 'rgba(0, 0, 0, 0.16)',
       //   blur: 10,
@@ -65,8 +66,8 @@ class Workspace {
     const objCenter = object.getCenterPoint()
     const viewportTransform = canvas.viewportTransform
     if (!canvasWidth || !canvasHeight || !viewportTransform) return
-    viewportTransform[4] = canvasWidth / 2 - objCenter.x * viewportTransform[0]
-    viewportTransform[5] = canvasHeight / 2 - objCenter.y * viewportTransform[3]
+    viewportTransform[4] = Math.floor(canvasWidth / 2 - objCenter.x * viewportTransform[0])
+    viewportTransform[5] = Math.floor(canvasHeight / 2 - objCenter.y * viewportTransform[3])
     canvas.setViewportTransform(viewportTransform)
     canvas.renderAll()
   }
@@ -108,19 +109,27 @@ class Workspace {
   }
   
   // 获取图片
-  toImage () {
+  toImage (props) {
+    const { type, dpi, quality } = props
     const rect = this.getRect()
     const { left, top, width, height } = rect
     const viewportTransform = this.canvas.viewportTransform
-    
+    const zoom = dpi
+    viewportTransform[0] = zoom
+    viewportTransform[3] = zoom
+    this.canvas.viewportTransform = viewportTransform
     const result = this.canvas.toDataURL({
-      format: 'jpeg',
-      quality: 1,
-      left: left + viewportTransform[4],
-      top: top + viewportTransform[5],
-      width: width,
-      height: height
+      format: type,
+      quality: quality,
+      // 处理交叉像素问题
+      left: left + viewportTransform[4] + dpi,
+      top: top + viewportTransform[5] + dpi,
+      width: width * zoom - dpi,
+      height: height * zoom - dpi
     })
+    viewportTransform[0] = 1
+    viewportTransform[3] = 1
+    this.canvas.viewportTransform = viewportTransform
     return result
   }
   

@@ -25,23 +25,24 @@ const ThumbCanvas = observer(({ data }) => {
     loadFromJSON()
   }, [data.rectColor, data.canvasData])
   
-  const loadFromJSON = async () => {
+  const loadFromJSON = () => {
     if (!canvas.current) return
-    await canvas.current.loadFromJSON(data.canvasData)
-    const rect = canvas.current.getObjects().find(item => item.id === WorkspaceId)
-    const width = container.current.clientWidth
-    const height = container.current.clientHeight
-    const thumbZoom = width / 375
-    canvas.current.setDimensions({
-      width,
-      height
+    canvas.current.loadFromJSON(data.canvasData, () => {
+      const rect = canvas.current.getObjects().find(item => item.id === WorkspaceId)
+      const width = container.current.clientWidth
+      const height = container.current.clientHeight
+      const thumbZoom = width / 375
+      canvas.current.setDimensions({
+        width,
+        height
+      })
+      canvas.current.setZoom(thumbZoom)
+      const thumbViewportTransform = canvas.current.viewportTransform
+      thumbViewportTransform[4] = -rect.left * thumbZoom
+      thumbViewportTransform[5] = -rect.top * thumbZoom
+      canvas.current.setViewportTransform(thumbViewportTransform)
+      canvas.current.renderAll()
     })
-    canvas.current.setZoom(thumbZoom)
-    const thumbViewportTransform = canvas.current.viewportTransform
-    thumbViewportTransform[4] = -rect.left * thumbZoom
-    thumbViewportTransform[5] = -rect.top * thumbZoom
-    canvas.current.setViewportTransform(thumbViewportTransform)
-    canvas.current.renderAll()
   }
   
   return <canvas style={{ transform: 'scale(0.5)', transformOrigin: 'left top' }} ref={container}/>
