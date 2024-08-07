@@ -48,7 +48,9 @@ class Events extends Base {
     this.canvas.on('selection:cleared', this.selectUpdate)
   }
   selectUpdate = (e) => {
-    createStore.selectObjects = e.selected || []
+    const selected = e.selected || []
+    createStore.selectObjects = selected
+    createStore.showComSetting = selected.length === 1
   }
 }
 

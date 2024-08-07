@@ -10,6 +10,7 @@ import Attr from './components/Attr'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../store/create'
 import DownloadPage from './components/DownloadPage'
+import ObjectAttr from './components/ObjectAttr'
 
 const cs = classNames.bind(styles)
 
@@ -55,6 +56,7 @@ const Create = () => {
         <Attr/>
       </div>
       <DownloadPage/>
+      <ObjectAttr/>
     </div>
   )
 }

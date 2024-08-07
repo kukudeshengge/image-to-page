@@ -5,7 +5,7 @@ import { plugins } from './plugins'
 import { initConfig } from './share/initConfig'
 import { WorkspaceId } from '../../../config/name'
 
-const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl']
+const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl', 'triggered', 'animateList']
 
 class Workspace {
   canvas = null
@@ -47,8 +47,7 @@ class Workspace {
       fill: '#fff',
       selectable: false,
       controls: false,
-      hoverCursor: 'default',
-      objectCaching: true
+      hoverCursor: 'default'
       // shadow: {
       //   color: 'rgba(0, 0, 0, 0.16)',
       //   blur: 10,
@@ -66,8 +65,8 @@ class Workspace {
     const objCenter = object.getCenterPoint()
     const viewportTransform = canvas.viewportTransform
     if (!canvasWidth || !canvasHeight || !viewportTransform) return
-    viewportTransform[4] = Math.floor(canvasWidth / 2 - objCenter.x * viewportTransform[0])
-    viewportTransform[5] = Math.floor(canvasHeight / 2 - objCenter.y * viewportTransform[3])
+    viewportTransform[4] = canvasWidth / 2 - objCenter.x * viewportTransform[0]
+    viewportTransform[5] = canvasHeight / 2 - objCenter.y * viewportTransform[3]
     canvas.setViewportTransform(viewportTransform)
     canvas.renderAll()
   }
@@ -140,6 +139,7 @@ class Workspace {
   // 加载json
   loadFromJSON (data) {
     this.setRectFilter({ style: data.filterStyle })
+    this.canvas.discardActiveObject()
     this.canvas.loadFromJSON(data.canvasData)
   }
 }

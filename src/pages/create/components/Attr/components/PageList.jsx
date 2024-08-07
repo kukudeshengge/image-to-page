@@ -77,7 +77,7 @@ const PageList = () => {
   
   const saveItem = (e) => {
     e.stopPropagation()
-    createStore.savePage()
+    createStore.openSaveModal = true
   }
   
   const LoadingCom = useMemo(() => {
