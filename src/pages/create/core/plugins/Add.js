@@ -183,6 +183,44 @@ class Add extends Base {
       message.warning(err.message)
     }
   }
+  // 线
+  addLine = (item) => {
+    const strokeDashArray = item.style === 'dashed' ? [6, 6] : undefined
+    const line = new fabric.Polyline(item.data, {
+      originX: 'center',
+      originY: 'center',
+      stroke: '#1261ff',
+      strokeDashArray,
+      id: uuid(),
+      // hasBorders: false,
+      objectCaching: false,
+      animateList: []
+    })
+    this.canvas.add(line).setActiveObject(line)
+    this.workspace.align.center()
+    line.animateList.push(createAnimate('fadeIn'))
+    this.workspace.animation.carryAnimations()
+    this.canvas.renderAll()
+  }
+  // path
+  addPath = (item) => {
+    const path = new fabric.Path(item.path, {
+      id: uuid(),
+      stroke: '#1261ff',
+      hasControls: true,
+      hasBorders: true,
+      opacity: 1,
+      originX: 'center',
+      originY: 'center',
+      fill: 'transparent',
+      animateList: []
+    })
+    this.canvas.add(path).setActiveObject(path)
+    this.workspace.align.center()
+    path.animateList.push(createAnimate('fadeIn'))
+    this.workspace.animation.carryAnimations()
+    this.canvas.renderAll()
+  }
 }
 
 export default Add

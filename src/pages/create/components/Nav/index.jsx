@@ -9,13 +9,17 @@ import IScroll from 'iscroll'
 const cs = classNames.bind(styles)
 
 const Nav = () => {
-  const { navActiveKey, filterActiveKey } = createStore
+  const { navActiveKey, filterActiveKey, leftNavScroll } = createStore
+  
   const onChangeNavKey = (item) => {
     createStore.navActiveKey = item.type
+    setTimeout(() => leftNavScroll.refresh())
   }
   const onFilterChange = (item) => {
     createStore.filterActiveKey = item.value
+    setTimeout(() => leftNavScroll.refresh())
   }
+  
   useEffect(() => {
     createStore.leftNavScroll = new IScroll('#right-nav-content', {
       mouseWheel: true,

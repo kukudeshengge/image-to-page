@@ -206,7 +206,7 @@ const createMenu = ({ activeObject }) => {
     menus = blankMenus
   } else if (activeObject.type === 'image') {
     menus = [...shareMenus, ...imageMenus]
-  } else if (activeObject.type === 'i-text') {
+  } else if (activeObject.type === 'textbox') {
     menus = [...shareMenus, ...textMenus]
   }
   return menus

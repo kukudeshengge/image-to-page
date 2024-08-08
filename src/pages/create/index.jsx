@@ -11,15 +11,15 @@ import { observer } from 'mobx-react-lite'
 import { createStore } from '../../store/create'
 import DownloadPage from './components/DownloadPage'
 import ObjectAttr from './components/ObjectAttr'
+import useSave from './hooks/useSave'
 
 const cs = classNames.bind(styles)
 
 const Create = () => {
   const { workspace } = createStore
+  const { onPreview, onSave, onPublish } = useSave()
   const nav = useNavigate()
-  const goBack = () => {
-    nav(-1)
-  }
+  const goBack = () => nav(-1)
   const addObject = item => {
     const func = workspace.add[item.type]
     if (!func) return
@@ -50,9 +50,9 @@ const Create = () => {
           }
         </div>
         <div className={cs('buttons')}>
-          <Button>预览</Button>
-          <Button type="primary">保存</Button>
-          <Button type="primary">发布</Button>
+          <Button onClick={() => onPreview}>预览</Button>
+          <Button onClick={() => onSave()} type="primary">保存</Button>
+          <Button onClick={() => onPublish()} type="primary">发布</Button>
         </div>
       </div>
       <div className={cs('content')}>

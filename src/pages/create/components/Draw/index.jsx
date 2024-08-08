@@ -23,7 +23,8 @@ const Draw = () => {
     const workspace = new Workspace(canvas)
     workspace.createStore = createStore
     createStore.init(canvas, workspace)
-    workspace.add.uploadImage()
+    // workspace.add.uploadImage()
+    // workspace.add.addText(16,'Hello，World')
   }, [])
   
   return (

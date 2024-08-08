@@ -108,7 +108,7 @@ class Workspace {
   }
   
   // 获取图片
-  toImage (props) {
+  toImage = (props) => {
     const { type, dpi, quality } = props
     const rect = this.getRect()
     const { left, top, width, height } = rect
@@ -132,12 +132,12 @@ class Workspace {
     return result
   }
   
-  toObject () {
+  toObject = () => {
     return this.canvas.toObject(ExportAttrs)
   }
   
   // 加载json
-  loadFromJSON (data) {
+  loadFromJSON = (data) => {
     this.setRectFilter({ style: data.filterStyle })
     this.canvas.discardActiveObject()
     this.canvas.loadFromJSON(data.canvasData)

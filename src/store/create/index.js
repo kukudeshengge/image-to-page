@@ -6,7 +6,8 @@ class CreateStore {
   leftNavScroll = null // 作恶导航scroll
   attrScroll = null // 右侧属性scroll
   comScroll = null // 组件设置scroll
-  navActiveKey = 'image-text' // 左侧导航高亮key
+  navActiveKey = 'decorate' // 左侧导航高亮key
+  // navActiveKey = 'image-text' // 左侧导航高亮key
   filterActiveKey = 0 // 滤镜高亮key
   attrActiveKey = 0 // 右侧属性高亮key
   comSettingActiveKey = 0 // 组件设置高亮key
@@ -109,7 +110,6 @@ class CreateStore {
     message.success('应用背景成功')
   }
   clearStore = () => {
-    console.log(this.pageList)
     this.leftNavScroll = null
     this.attrScroll = null
     this.comScroll = null
