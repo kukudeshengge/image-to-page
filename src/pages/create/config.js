@@ -23,10 +23,10 @@ export const tools = [
     icon: 'https://ossprod.jrdaimao.com/file/1721115980530200.svg',
     activeIcon: 'https://ossprod.jrdaimao.com/file/1721115993340173.svg'
   },
-  {
-    title: '二维码',
-    type: 'code',
-    icon: 'https://ossprod.jrdaimao.com/file/1721116212472998.svg',
-    activeIcon: 'https://ossprod.jrdaimao.com/file/1721116220431487.svg'
-  }
+  // {
+  //   title: '二维码',
+  //   type: 'code',
+  //   icon: 'https://ossprod.jrdaimao.com/file/1721116212472998.svg',
+  //   activeIcon: 'https://ossprod.jrdaimao.com/file/1721116220431487.svg'
+  // }
 ]

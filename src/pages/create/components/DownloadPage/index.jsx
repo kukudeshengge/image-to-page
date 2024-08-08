@@ -46,7 +46,7 @@ const DownloadPage = () => {
     const file = base64ConvertFile(base64)
     form.setFieldsValue({
       size: `${workspace.rectWidth * values.dpi} x ${workspace.rectHeight * values.dpi}`,
-      weight: bytesToSize(file.size)
+      weight: `约${bytesToSize(file.size)}`
     })
     setImage(base64)
   }

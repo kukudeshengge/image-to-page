@@ -6,15 +6,17 @@ import { createStore } from '../../../../store/create'
  * 设置元素对齐方式
  */
 class Align extends Base {
-  setPosition = (value, target) => {
-    if (!this.canvas) return
+  getObject = (target) => {
     let activeObject
     if (target) {
       activeObject = target
     } else {
       activeObject = this.canvas.getActiveObject()
     }
-    if (!activeObject) throw new Error('无元素')
+    return activeObject
+  }
+  setPosition = (activeObject, value) => {
+    if (!this.canvas || !activeObject) return
     const { left, top } = value
     const pos = {}
     if (!isUndef(left)) pos.left = left
@@ -28,50 +30,52 @@ class Align extends Base {
    * 左对齐
    */
   left = () => {
-    this.setPosition({ left: 0 })
+    const activeObject = this.getObject()
+    this.setPosition(activeObject, { left: activeObject.getScaledWidth() / 2 })
   }
   
   /**
    * 顶对齐
    */
   top = () => {
-    this.setPosition({ top: 0 })
+    const activeObject = this.getObject()
+    this.setPosition(activeObject, { top: activeObject.getScaledHeight() / 2 })
   }
   
   /**
    * 左右居中对齐
    */
   alignCenter = () => {
-    const activeObject = this.canvas.getActiveObject()
+    const activeObject = this.getObject()
     const width = this.workspace.rectWidth || 0
-    this.setPosition({ left: (width - activeObject.width * activeObject.scaleX) / 2 })
+    this.setPosition(activeObject, { left: width / 2 })
   }
   
   /**
    * 上下居中对齐
    */
   middleCenter = () => {
-    const activeObject = this.canvas.getActiveObject()
+    const activeObject = this.getObject()
     const height = this.workspace.rectHeight || 0
-    this.setPosition({ top: (height - activeObject.height * activeObject.scaleY) / 2 })
+    this.setPosition(activeObject, { top: height / 2 })
   }
   
   /**
    * 右对齐
    */
   right = () => {
-    const activeObject = this.canvas.getActiveObject()
+    const activeObject = this.getObject()
     const width = this.workspace.rectWidth || 0
-    this.setPosition({ left: width - activeObject.width * activeObject.scaleX })
+    this.setPosition(activeObject, { left: width - activeObject.getScaledWidth() / 2 })
   }
   
   /**
    * 底对齐
    */
   bottom = () => {
-    const activeObject = this.canvas.getActiveObject()
+    const activeObject = this.getObject()
     const height = this.workspace.rectHeight || 0
-    this.setPosition({ top: height - activeObject.height * activeObject.scaleY })
+    this.setPosition(activeObject, { top: height - activeObject.getScaledHeight() / 2 })
   }
   
   /**

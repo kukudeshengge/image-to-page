@@ -1,14 +1,34 @@
+.animation-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.animation-content {
+  width: 200%;
+  height: 100%;
+  display: flex;
+  transition: transform 0.3s ease;
+
+  > div {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+}
+
 .animation {
-  position: relative;
-  padding: 10px 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .add-buttons {
-  height: 50px;
+  height: 60px;
   display: flex;
   align-items: center;
   padding: 0 10px;
-  margin-bottom: 10px;
 
   :global {
     .ant-btn {
@@ -22,8 +42,14 @@
   }
 }
 
-.animation-list {
+.animation-list-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
 
+.animation-list {
+  padding: 10px 0;
 }
 
 .animation-item {
@@ -140,38 +166,140 @@
   padding: 0 10px;
   display: flex;
   margin-bottom: 10px;
+  justify-content: space-between;
+
   > div {
     display: flex;
     align-items: center;
-
-    &:nth-child(2) {
-      margin-left: 10px;
-    }
+    width: 115px;
 
     > span {
       margin-right: 5px;
       flex-shrink: 0;
       font-size: 14px;
     }
+
     span {
       flex-shrink: 0;
       font-size: 14px;
     }
   }
+
   .loop-button {
-    width: 110px;
     flex-shrink: 0;
     border: solid 1px #d9d9d9;
     border-radius: 6px;
     padding: 0 11px;
     transition: all 0.2s;
+
     :global {
       .ant-checkbox {
         margin-right: 0;
       }
     }
+
     &:hover {
       border-color: #1261ff;
+    }
+  }
+}
+
+
+.animation-select {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.animation-select-back {
+  flex-shrink: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.16);
+
+  span {
+    color: #333333;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+      width: 14px;
+      height: 14px;
+    }
+
+    img:nth-child(2) {
+      display: none;
+    }
+
+    &:hover {
+      color: #1261ff;
+
+      img {
+        &:nth-child(1) {
+          display: none;
+        }
+
+        &:nth-child(2) {
+          display: inline;
+        }
+      }
+    }
+  }
+}
+
+.animation-select-list-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.animation-select-list {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+
+  > div {
+    cursor: pointer;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 45px;
+      height: 45px;
+    }
+
+    img:nth-child(2) {
+      display: none;
+    }
+
+    span {
+      margin-top: 5px;
+      color: rgb(118, 131, 143);
+      font-size: 14px;
+    }
+
+    &:hover {
+      span {
+        color: #1261ff;
+      }
+
+      img {
+        &:nth-child(1) {
+          display: none;
+        }
+
+        &:nth-child(2) {
+          display: inline;
+        }
+      }
     }
   }
 }

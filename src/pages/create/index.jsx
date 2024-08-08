@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { useNavigate } from 'react-router-dom'
@@ -25,6 +25,11 @@ const Create = () => {
     if (!func) return
     func()
   }
+  useEffect(() => {
+    return () => {
+      createStore.clearStore()
+    }
+  }, [])
   return (
     <div className={cs('create')}>
       <div className={cs('header')}>

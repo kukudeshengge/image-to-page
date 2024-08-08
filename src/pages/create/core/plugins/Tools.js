@@ -14,7 +14,8 @@ const lockAttrs = [
     'editable'
 ]
 const copyAttrs = [
-    'triggered'
+    'triggered',
+    'animateList'
 ]
 
 /**

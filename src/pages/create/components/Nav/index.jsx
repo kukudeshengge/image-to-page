@@ -17,7 +17,7 @@ const Nav = () => {
     createStore.filterActiveKey = item.value
   }
   useEffect(() => {
-    createStore.scroll = new IScroll('#right-nav-content', {
+    createStore.leftNavScroll = new IScroll('#right-nav-content', {
       mouseWheel: true,
       scrollbars: true
     })

@@ -160,9 +160,6 @@ const Text = () => {
         }
     }
 
-    // 防止闪烁
-    if (!state.fontSize) return
-
     return (
         <div className={cs('text-attr')}>
             <div className={cs('item-wrap')}>
@@ -255,7 +252,7 @@ const Text = () => {
                 }
             </div>
             <div className={cs('item-wrap')}>
-                <div className={cs('text-title')}>透明度</div>
+                <div className={cs('title')}>透明度</div>
                 <InputNumber
                     value={state.opacity}
                     onChange={onOpacityChange}
