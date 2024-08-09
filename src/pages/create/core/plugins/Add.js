@@ -7,29 +7,41 @@ import { IMGCLIENT } from '@/utils/ossUtil'
 import { audioTypes, imageTypes, videoTypes } from '../../../../utils/type'
 import { createStore } from '../../../../store/create'
 import { createAnimate } from '../../components/ObjectAttr/components/Animation/config'
+import { createVerticalText } from '../objects/VerticalText'
+import { ArcText } from '../objects/ArcText'
 
 class Add extends Base {
   uploading = false
-  // 新增文字元素
-  addText = (fontSize = 14, textValue = '双击编辑文本') => {
-    const text = new fabric.Textbox(textValue, {
+  // 公用属性
+  createShareAttr = () => {
+    return {
       id: uuid(),
-      fontSize,
-      fontFamily: 'serif',
-      fillType: 0,
-      hasControls: true,
-      hasBorders: true,
-      fontWeight: 'normal',
       originX: 'center',
       originY: 'center',
-      textAlign: 'justify-center',
-      animateList: []
-    })
-    this.canvas.add(text).setActiveObject(text)
+      animateList: [],
+      triggered: { triggeredType: 0 }
+    }
+  }
+  // 第一次添加元素（包含默认位置、默认动画）
+  firstAddObject = (object) => {
+    this.canvas.add(object).setActiveObject(object)
     this.workspace.align.center()
-    text.animateList.push(createAnimate('fadeIn'))
+    object.animateList.push(createAnimate('fadeIn'))
     this.workspace.animation.carryAnimations()
     this.canvas.renderAll()
+  }
+  // 新增文字元素
+  addText = (props) => {
+    const { text: textValue = '双击编辑正文', fontSize = 14, ...otherProps } = props || {}
+    const text = new fabric.Textbox(textValue, {
+      fontSize,
+      fontFamily: 'serif',
+      fontWeight: 'normal',
+      textAlign: 'justify-center',
+      ...otherProps,
+      ...this.createShareAttr()
+    })
+    this.firstAddObject(text)
   }
   /**
    * 获取图片比例
@@ -187,39 +199,45 @@ class Add extends Base {
   addLine = (item) => {
     const strokeDashArray = item.style === 'dashed' ? [6, 6] : undefined
     const line = new fabric.Polyline(item.data, {
-      originX: 'center',
-      originY: 'center',
       stroke: '#1261ff',
       strokeDashArray,
-      id: uuid(),
-      // hasBorders: false,
       objectCaching: false,
-      animateList: []
+      ...this.createShareAttr()
     })
-    this.canvas.add(line).setActiveObject(line)
-    this.workspace.align.center()
-    line.animateList.push(createAnimate('fadeIn'))
-    this.workspace.animation.carryAnimations()
-    this.canvas.renderAll()
+    this.firstAddObject(line)
   }
   // path
   addPath = (item) => {
     const path = new fabric.Path(item.path, {
-      id: uuid(),
       stroke: '#1261ff',
       hasControls: true,
       hasBorders: true,
       opacity: 1,
-      originX: 'center',
-      originY: 'center',
       fill: 'transparent',
-      animateList: []
+      ...this.createShareAttr()
     })
-    this.canvas.add(path).setActiveObject(path)
-    this.workspace.align.center()
-    path.animateList.push(createAnimate('fadeIn'))
-    this.workspace.animation.carryAnimations()
-    this.canvas.renderAll()
+    this.firstAddObject(path)
+  }
+  // 竖排文字
+  addVerticalText = () => {
+    const text = createVerticalText(this.canvas, '竖排文字', { fontSize: 14 })
+    text.set({
+      fontSize: 14,
+      ...this.createShareAttr()
+    })
+    this.firstAddObject(text)
+  }
+  // 环形文字
+  addArcText = () => {
+    const text = new ArcText('环形',{
+      diameter: 360,
+      angle: -180
+    })
+    text.set({
+      fontSize: 32,
+      ...this.createShareAttr()
+    })
+    this.firstAddObject(text)
   }
 }
 

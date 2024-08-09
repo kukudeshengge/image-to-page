@@ -15,7 +15,12 @@ const Attr = () => {
     createStore.attrScroll = new IScroll('#attr-right-nav-content', {
       mouseWheel: true,
       scrollbars: true,
-      preventDefault: false
+      preventDefault: false,
+      interactiveScrollbars: true,
+      disableTouch: true,
+      disableMouse: true,
+      disablePointer: true,
+      wheelMoveStopPropagation: true
     })
   }, [])
   

@@ -1,5 +1,5 @@
 import React from 'react'
-import ShapeItem from './ShapeItem'
+import ShapeItem from '../ShapeItem'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 

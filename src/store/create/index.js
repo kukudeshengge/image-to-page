@@ -6,10 +6,10 @@ class CreateStore {
   leftNavScroll = null // 作恶导航scroll
   attrScroll = null // 右侧属性scroll
   comScroll = null // 组件设置scroll
-  navActiveKey = 'decorate' // 左侧导航高亮key
+  navActiveKey = 'wordart' // 左侧导航高亮key
   // navActiveKey = 'image-text' // 左侧导航高亮key
   filterActiveKey = 0 // 滤镜高亮key
-  attrActiveKey = 0 // 右侧属性高亮key
+  attrActiveKey = 1 // 右侧属性高亮key
   comSettingActiveKey = 0 // 组件设置高亮key
   editPageLoadingModal = false
   canvas = null

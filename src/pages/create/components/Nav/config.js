@@ -23,7 +23,7 @@ export const navList = [
     activeIcon: 'https://ossprod.jrdaimao.com/file/1721118345581820.svg'
   },
   {
-    title: '艺术字',
+    title: '文字',
     type: 'wordart',
     icon: 'https://ossprod.jrdaimao.com/file/172111987923170.svg',
     activeIcon: 'https://ossprod.jrdaimao.com/file/1721119887666196.svg'

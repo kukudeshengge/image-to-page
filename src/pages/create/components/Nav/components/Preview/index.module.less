@@ -1,0 +1,26 @@
+.preview-popover {
+  :global {
+    left: 370px !important;
+  }
+}
+
+.preview-content {
+  width: 280px;
+
+  > img {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    :global {
+      .ant-btn:last-child {
+        flex: 1;
+        margin-left: 10px;
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+.word-dart {
+
+}
+
+.text-wrap {
+  margin-bottom: 15px;
+  .text-title {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .text-list {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #f1f5f9;
+      cursor: pointer;
+      background: #f1f5f9;
+      padding: 5px;
+      box-sizing: border-box;
+      transition: all 0.2s linear;
+      border-radius: 4px;
+
+      img {
+        width: 20px;
+        height: 20px;
+
+        &:nth-child(2) {
+          display: none;
+        }
+      }
+
+      span {
+        margin-top: 4px;
+        font-size: 14px;
+      }
+
+      &:hover {
+        border-color: #1261ff;
+
+        span {
+          color: #1261ff;
+        }
+
+        img {
+          &:nth-child(1) {
+            display: none;
+          }
+
+          &:nth-child(2) {
+            display: inline;
+          }
+        }
+      }
+    }
+  }
+}

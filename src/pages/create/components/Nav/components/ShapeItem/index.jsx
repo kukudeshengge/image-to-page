@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
-import Preview from './Preview'
+import Preview from '../Preview'
 
 const cs = classNames.bind(styles)
 
