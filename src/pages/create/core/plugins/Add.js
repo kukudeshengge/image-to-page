@@ -229,7 +229,7 @@ class Add extends Base {
   }
   // 环形文字
   addArcText = () => {
-    const text = new ArcText('环形',{
+    const text = new ArcText('环形', {
       diameter: 360,
       angle: -180
     })
@@ -238,6 +238,18 @@ class Add extends Base {
       ...this.createShareAttr()
     })
     this.firstAddObject(text)
+  }
+  jsonGroupToObject = (data) => {
+    new fabric.Group.fromObject(data, (group) => {
+      group.set({
+        originX: 'center',
+        originY: 'center'
+      })
+      this.canvas.add(group).setActiveObject(group)
+      this.workspace.align.center()
+      this.workspace.animation.carryAnimations()
+      this.canvas.renderAll()
+    })
   }
 }
 

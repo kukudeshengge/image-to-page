@@ -20,7 +20,8 @@ const Attr = () => {
       disableTouch: true,
       disableMouse: true,
       disablePointer: true,
-      wheelMoveStopPropagation: true
+      wheelMoveStopPropagation: true,
+      bounce: false
     })
   }, [])
   

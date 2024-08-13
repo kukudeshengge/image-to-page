@@ -58,7 +58,7 @@ const Animation = () => {
   const previewAnimation = item => {
     if (animateing.current) return
     animateing.current = true
-    workspace.animation.carryAnimations(item, () => {
+    workspace.animation.carryAnimations(undefined, item, () => {
       animateing.current = false
     })
   }

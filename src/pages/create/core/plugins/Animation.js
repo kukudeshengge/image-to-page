@@ -15,15 +15,15 @@ class Animation extends Base {
     }
   }
   // 执行动画
-  carryAnimations = (value, callback) => {
-    const object = this.canvas.getActiveObject()
+  carryAnimations = (animateObject, value, callback) => {
+    const object = animateObject || this.canvas.getActiveObject()
     let list = null
     if (value) {
       list = Array.isArray(value) ? value : [value]
     } else {
       list = object.animateList
     }
-    if (!list) return
+    if (!list || !object) return
     
     object.set({
       hasControls: false,
@@ -68,7 +68,7 @@ class Animation extends Base {
   // to right
   toRight = (object, time, easing) => {
     return new Promise(resolve => {
-      const start = -object.width
+      const start = -object.getScaledWidth()
       const end = object.left
       object.set('left', start)
       object.animate('left', end, this.createAnimateOptions(time, resolve, easing))
@@ -77,7 +77,7 @@ class Animation extends Base {
   // to left
   toLeft = (object, time, easing) => {
     return new Promise(resolve => {
-      const start = this.workspace.rectWidth + object.width
+      const start = this.workspace.rectWidth + object.getScaledWidth()
       const end = object.left
       object.set('left', start)
       object.animate('left', end, this.createAnimateOptions(time, resolve, easing))
@@ -86,7 +86,7 @@ class Animation extends Base {
   // to bottom
   toBottom = (object, time, easing) => {
     return new Promise(resolve => {
-      const start = -object.height
+      const start = -object.getScaledHeight()
       const end = object.top
       object.set('top', start)
       object.animate('top', end, this.createAnimateOptions(time, resolve, easing))
@@ -95,7 +95,7 @@ class Animation extends Base {
   // to top
   toTop = (object, time, easing) => {
     return new Promise(resolve => {
-      const start = this.workspace.rectHeight + object.height
+      const start = this.workspace.rectHeight + object.getScaledHeight()
       const end = object.top
       object.set('top', start)
       object.animate('top', end, this.createAnimateOptions(time, resolve, easing))
@@ -185,7 +185,7 @@ class Animation extends Base {
       new Promise((resolve => {
         object.set('angle', 180)
         object.animate('angle', 0, this.createAnimateOptions(time, resolve, easing))
-      })),
+      }))
     ])
   }
 }

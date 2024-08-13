@@ -17,7 +17,7 @@ const cs = classNames.bind(styles)
 
 const Create = () => {
   const { workspace } = createStore
-  const { onPreview, onSave, onPublish } = useSave()
+  const { onPreview, onSave, onPublish,uploadToTemplate } = useSave()
   const nav = useNavigate()
   const goBack = () => nav(-1)
   const addObject = item => {
@@ -50,6 +50,7 @@ const Create = () => {
           }
         </div>
         <div className={cs('buttons')}>
+          <Button onClick={() => uploadToTemplate()}>保存模板</Button>
           <Button onClick={() => onPreview}>预览</Button>
           <Button onClick={() => onSave()} type="primary">保存</Button>
           <Button onClick={() => onPublish()} type="primary">发布</Button>

@@ -1,5 +1,5 @@
 import { fabric } from 'fabric'
-import { blankMenus, combinationMenus, imageMenus, shareMenus, textMenus } from '../menu/createMenu'
+import { blankMenus, combinationMenus, imageMenus, shareMenus, textMenus, uploadMenus } from '../menu/createMenu'
 
 export function cssToFabricGradient (stops, width, height, angle) {
   const gradAngleToCoords = (paramsAngle) => {
@@ -46,7 +46,7 @@ export function getMenuFunc (workspace, id) {
     return menuFnCache.get(id)
   }
   let func = null
-  const menuList = [...blankMenus, ...combinationMenus, ...shareMenus, ...imageMenus, ...textMenus]
+  const menuList = [...blankMenus, ...combinationMenus, ...shareMenus, ...imageMenus, ...textMenus, ...uploadMenus]
   const fn = recursionGetFn(menuList, id)
   if (typeof fn === 'function') {
     func = fn

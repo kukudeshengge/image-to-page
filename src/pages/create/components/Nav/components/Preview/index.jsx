@@ -7,14 +7,17 @@ const cs = classNames.bind(styles)
 
 const loveIcon = <img width='18' height='18' src="https://ossprod.jrdaimao.com/file/1721183774943391.svg" alt=""/>
 
-const Preview = ({ children }) => {
+const Preview = (props) => {
+  const { children, item } = props
+  
   const content = <div className={cs('preview-content')}>
-    <img src="https://q1.itc.cn/images01/20240325/74f1df00de6546d5b5f5cf155a81ccd7.jpeg" alt=""/>
-    <div>
+    <img src={item.url} alt=""/>
+    <div className={cs('footer')}>
       <Button icon={loveIcon}>收藏</Button>
       <Button type='primary'>立即使用</Button>
     </div>
   </div>
+  return children
   return (
     <Popover
       arrow={false}

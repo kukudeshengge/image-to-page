@@ -5,10 +5,11 @@ import { plugins } from './plugins'
 import { initConfig } from './share/initConfig'
 import { WorkspaceId } from '../../../config/name'
 
-const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl', 'triggered', 'animateList']
+export const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl', 'triggered', 'animateList']
 
 class Workspace {
   canvas = null
+  canvasEl = null
   canvasWidth = 0
   canvasHeight = 0
   rectWidth = 375
@@ -19,6 +20,7 @@ class Workspace {
     this.canvas.share = {}
     this.canvasWidth = canvas.width
     this.canvasHeight = canvas.height
+    this.canvasEl = this.canvas.getElement()
     initConfig(canvas)
     this._initPlugins()
     this.initRect()
@@ -56,12 +58,45 @@ class Workspace {
       // }
     })
     this.canvas.add(rect)
-    this.setCenterFromObject(rect)
+    this.auto()
+  }
+  
+  // 自动缩放
+  auto = () => {
+    const scale = this.getScale()
+    if (scale) {
+      this.scale = scale
+      this.setZoomAuto(scale)
+    }
+  }
+  setZoomAuto = (scale) => {
+    const width = this.canvasWidth
+    const height = this.canvasHeight
+    this.canvas.setWidth(width)
+    this.canvas.setHeight(height)
+    const center = this.canvas.getCenter()
+    this.canvas.setViewportTransform(fabric.iMatrix.concat())
+    this.canvas.zoomToPoint(new fabric.Point(center.left, center.top), scale)
+    this.setCenterFromObject()
+  }
+  
+  getScale = () => {
+    const viewPortWidth = this.canvasEl.offsetWidth
+    const viewPortHeight = this.canvasEl.offsetHeight
+    const width = this.rectWidth || 0
+    const height = this.rectHeight || 0
+    // 按照宽度
+    if (viewPortWidth / viewPortHeight < width / height) {
+      return viewPortWidth / width - 0.08
+    } // 按照宽度缩放
+    return viewPortHeight / height - 0.08
   }
   
   // 设置画布中心到指定对象中心点上
   setCenterFromObject (object) {
     const { canvas, canvasWidth, canvasHeight } = this
+    object = object || this.getRect()
+    if (!object) return
     const objCenter = object.getCenterPoint()
     const viewportTransform = canvas.viewportTransform
     if (!canvasWidth || !canvasHeight || !viewportTransform) return
@@ -109,10 +144,12 @@ class Workspace {
   
   // 获取图片
   toImage = (props) => {
-    const { type, dpi, quality } = props
+    const { type = 'png', dpi = 1, quality = 1 } = props || {}
     const rect = this.getRect()
     const { left, top, width, height } = rect
     const viewportTransform = this.canvas.viewportTransform
+    const beforeX = viewportTransform[0]
+    const beforeY = viewportTransform[3]
     const zoom = dpi
     viewportTransform[0] = zoom
     viewportTransform[3] = zoom
@@ -126,8 +163,8 @@ class Workspace {
       width: width * zoom - dpi,
       height: height * zoom - dpi
     })
-    viewportTransform[0] = 1
-    viewportTransform[3] = 1
+    viewportTransform[0] = beforeX
+    viewportTransform[3] = beforeY
     this.canvas.viewportTransform = viewportTransform
     return result
   }
@@ -137,10 +174,18 @@ class Workspace {
   }
   
   // 加载json
-  loadFromJSON = (data) => {
+  loadFromJSON = (data, startAnimate) => {
     this.setRectFilter({ style: data.filterStyle })
     this.canvas.discardActiveObject()
-    this.canvas.loadFromJSON(data.canvasData)
+    this.canvas.loadFromJSON(data.canvasData, () => {
+      if (!startAnimate) return
+      const objects = this.canvas.getObjects()
+      objects.forEach(item => {
+        if (Array.isArray(item.animateList) && item.animateList.length) {
+          this.animation.carryAnimations(item)
+        }
+      })
+    })
   }
 }
 

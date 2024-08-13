@@ -18,5 +18,6 @@ function CreateFetch(prePath) {
     return fetch;
 }
 
+export const fetch = CreateFetch('')
 export const acFetch = CreateFetch('')
 acFetch.code = 1

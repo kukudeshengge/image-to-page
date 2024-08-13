@@ -23,7 +23,7 @@ const Nav = () => {
   useEffect(() => {
     createStore.leftNavScroll = new IScroll('#right-nav-content', {
       mouseWheel: true,
-      scrollbars: true
+      scrollbars: true,
     })
   }, [])
   

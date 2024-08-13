@@ -128,3 +128,16 @@ export const bytesToSize = (size) => {
   
   return size
 }
+
+export const extractUrlCentreSize = (src) => {
+  const result = { width: null, height: null, scale: null };
+  if (!src) return result;
+  const prop = src.slice(src.lastIndexOf('_') + 1, src.lastIndexOf('.'));
+  const [width, height] = prop.split('x');
+  if (width && height) {
+    result.width = width;
+    result.height = height;
+    result.scale = (width / height).toFixed(2);
+  }
+  return result;
+};

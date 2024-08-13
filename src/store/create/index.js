@@ -6,10 +6,10 @@ class CreateStore {
   leftNavScroll = null // 作恶导航scroll
   attrScroll = null // 右侧属性scroll
   comScroll = null // 组件设置scroll
+  // navActiveKey = 'one-page' // 左侧导航高亮key
   navActiveKey = 'wordart' // 左侧导航高亮key
-  // navActiveKey = 'image-text' // 左侧导航高亮key
   filterActiveKey = 0 // 滤镜高亮key
-  attrActiveKey = 1 // 右侧属性高亮key
+  attrActiveKey = 0 // 右侧属性高亮key
   comSettingActiveKey = 0 // 组件设置高亮key
   editPageLoadingModal = false
   canvas = null
@@ -108,6 +108,18 @@ class CreateStore {
       rect.fill = JSON.parse(JSON.stringify(currentRectFill))
     })
     message.success('应用背景成功')
+  }
+  // 使用模板
+  echoTemplate = (data) => {
+    const pageItem = this.getCurrentPage()
+    pageItem.pageAngle = data.pageAngle
+    pageItem.audio = data.audio
+    pageItem.canvasData = data.canvasData
+    pageItem.filterKey = data.filterKey
+    pageItem.filterStyle = data.filterStyle
+    pageItem.opacity = data.opacity
+    pageItem.rectColor = data.rectColor
+    this.workspace.loadFromJSON(pageItem, true)
   }
   clearStore = () => {
     this.leftNavScroll = null

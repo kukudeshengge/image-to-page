@@ -25,7 +25,8 @@ const ObjectThumb = ({ object }) => {
       const name = object.type[0].toUpperCase() + object.type.slice(1)
       fabric[name].fromObject(object, object => {
         object.set({
-          visible: true, opacity: 1
+          visible: true,
+          opacity: 1
         })
         setImage(object.toDataURL())
       })
@@ -119,7 +120,7 @@ const DraggableItem = (props) => {
 }
 
 const CoverageList = () => {
-  const { selectObjects, attrScroll } = createStore
+  const { selectObjects, canvas, workspace, attrScroll } = createStore
   const page = createStore.getCurrentPage()
   const [list, setList] = useState([])
   const sensors = useSensors(
@@ -134,7 +135,7 @@ const CoverageList = () => {
     if (!page.canvasData || !page.canvasData.objects) return []
     const list = page.canvasData.objects.filter(item => {
       return item.id !== WorkspaceId && item.id !== HoverBorderId
-    })
+    }).reverse()
     setList(list)
     setTimeout(() => attrScroll?.refresh())
   }, [page.canvasData])
@@ -156,10 +157,21 @@ const CoverageList = () => {
     if (!active || !over) return
     const newList = [...list]
     const { activeIndex, overIndex } = getMoveIndex(newList, dragItem)
-    
-    if (activeIndex !== overIndex) {
-      setList(arrayMove(newList, activeIndex, overIndex))
+    if (activeIndex === overIndex) return
+    const object = canvas.getObjects().find(v => v.id === active.id)
+    if (!object) return
+    if (overIndex < activeIndex) {
+      // 上移
+      for (let i = overIndex; i < activeIndex; i++) {
+        workspace?.order.up(object, false)
+      }
+    } else {
+      // 下移
+      for (let i = activeIndex; i < overIndex; i++) {
+        workspace?.order.down(object, false)
+      }
     }
+    setList(arrayMove(newList, activeIndex, overIndex))
   }
   
   // 高亮id集合

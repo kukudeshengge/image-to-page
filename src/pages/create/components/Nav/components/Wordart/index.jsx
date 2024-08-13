@@ -1,14 +1,21 @@
 import React from 'react'
 import classNames from 'classnames/bind'
+import imageTextStyles from '../ImageText/index.module.less'
 import styles from './index.module.less'
 import { wordartList } from './config'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../../store/create'
+import Image from '../../../../../../components/Image'
+import { useQueryResourceList } from '../ImageText/hooks'
 
 const cs = classNames.bind(styles)
 
 const Wordart = () => {
   const { workspace } = createStore
+  const { data } = useQueryResourceList({
+    type: 'hot-text'
+  })
+  
   const onClick = (item) => {
     switch (item.type) {
       case 'h1':
@@ -43,6 +50,10 @@ const Wordart = () => {
     }
   }
   
+  const addHotText = (item) => {
+    workspace.add.jsonGroupToObject(item.data)
+  }
+  
   return (
     <div className={cs('word-dart')}>
       <div className={cs('text-wrap')}>
@@ -59,20 +70,18 @@ const Wordart = () => {
           }
         </div>
       </div>
-      {/*<div className={cs('text-wrap')}>*/}
-      {/*  <div className={cs('text-title')}>推荐</div>*/}
-      {/*  <div className={cs('text-list')}>*/}
-      {/*    {*/}
-      {/*      wordartList.map((item, index) => {*/}
-      {/*        return <div key={index}>*/}
-      {/*          <img src={item.image} alt=""/>*/}
-      {/*          <img src={item.selectImage} alt=""/>*/}
-      {/*          <span>{item.title}</span>*/}
-      {/*        </div>*/}
-      {/*      })*/}
-      {/*    }*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+      <div className={cs('text-wrap')}>
+        <div className={cs('text-title')}>推荐</div>
+        <div className={cs('hot-list')}>
+          {
+            data?.map((item) => {
+              return <div onClick={() => addHotText(item)} className={imageTextStyles.shapeItem} key={item._id}>
+                <Image src={item.url}/>
+              </div>
+            })
+          }
+        </div>
+      </div>
     </div>
   )
 }

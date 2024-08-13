@@ -158,7 +158,7 @@ export const imageMenus = [
     text: '替换图片',
     fn: 'tools.replaceImage',
     id: 'replaceImage'
-  },
+  }
   // {
   //   text: '剪裁图片',
   //   fn: 'clipImage.startClip',
@@ -192,14 +192,26 @@ export const combinationMenus = [
     id: 'splitCombination'
   }
 ]
+export const uploadMenus = [
+  {
+    text: '上传到图文',
+    fn: 'tools.uploadToImageText',
+    id: 'uploadToImageText'
+  },
+  {
+    text: '上传到文字',
+    fn: 'tools.uploadToText',
+    id: 'uploadToText'
+  }
+]
 
 const createMenu = ({ activeObject }) => {
   if (!activeObject) return null
   let beforeMenu = []
-  if (activeObject.isType("activeSelection")) {
+  if (activeObject.isType('activeSelection')) {
     beforeMenu = [combinationMenus[0]]
-  }else if (activeObject.isType('group')) {
-    beforeMenu = [combinationMenus[1]]
+  } else if (activeObject.isType('group')) {
+    beforeMenu = [combinationMenus[1], ...uploadMenus]
   }
   let menus = [...beforeMenu, ...shareMenus]
   if (activeObject.id === WorkspaceId) {
