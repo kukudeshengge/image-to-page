@@ -96,12 +96,12 @@ class Add extends Base {
   uploadImage = async () => {
     if (this.uploading) return
     try {
-      // const e = await uploadFile({ accept: imageTypes })
-      // const [file] = e.target.files
-      // if (!file) return
-      // this.openUploadLoading()
-      // const { url } = await IMGCLIENT.upload(file)
-      const url = 'https://img0.baidu.com/it/u=1929577121,3484200313&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500'
+      const e = await uploadFile({ accept: imageTypes })
+      const [file] = e.target.files
+      if (!file) return
+      this.openUploadLoading()
+      const { url } = await IMGCLIENT.upload(file)
+      // const url = 'https://img0.baidu.com/it/u=1929577121,3484200313&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500'
       fabric.Image.fromURL(url, img => {
         const { scaleX, scaleY } = this.getImageScale(img)
         img.set({
@@ -133,13 +133,12 @@ class Add extends Base {
       if (!file) return
       this.openUploadLoading()
       const { url } = await IMGCLIENT.upload(file)
-      const pageItem = createStore.getCurrentPage()
-      pageItem.audio = {
+      createStore.audio = {
         name: file.name,
         src: url
       }
       this.closeUploadLoading()
-      message.success('上传成功，已设置为当前页面背景音乐')
+      message.success('设置背景成功')
     } catch (err) {
       console.log(err)
       this.closeUploadLoading()

@@ -8,6 +8,7 @@ import './share/global.css'
 message.config({ maxCount: 1 })
 
 function App () {
+ 
   return (
     <ConfigProvider
       theme={{

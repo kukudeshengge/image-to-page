@@ -132,7 +132,7 @@ const CoverageList = () => {
   )
   // object list
   useEffect(() => {
-    if (!page.canvasData || !page.canvasData.objects) return []
+    if (!page.canvasData || !page.canvasData.objects) return
     const list = page.canvasData.objects.filter(item => {
       return item.id !== WorkspaceId && item.id !== HoverBorderId
     }).reverse()

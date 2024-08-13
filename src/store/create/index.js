@@ -1,16 +1,19 @@
 import { makeAutoObservable } from 'mobx'
 import { PageItemStore } from './pageItem'
 import { message } from 'antd'
+import { v4 as uuid } from 'uuid'
 
 class CreateStore {
+  id = null
   leftNavScroll = null // 作恶导航scroll
   attrScroll = null // 右侧属性scroll
   comScroll = null // 组件设置scroll
-  // navActiveKey = 'one-page' // 左侧导航高亮key
-  navActiveKey = 'wordart' // 左侧导航高亮key
+  navActiveKey = 'image-text' // 左侧导航高亮key
+  // navActiveKey = 'wordart' // 左侧导航高亮key
   filterActiveKey = 0 // 滤镜高亮key
   attrActiveKey = 0 // 右侧属性高亮key
   comSettingActiveKey = 0 // 组件设置高亮key
+  canvasLoading = true
   editPageLoadingModal = false
   canvas = null
   workspace = null
@@ -25,6 +28,10 @@ class CreateStore {
   pageIndex = 0
   openSaveModal = false
   showComSetting = false
+  audio = {
+    name: '',
+    src: ''
+  }
   
   constructor () {
     makeAutoObservable(this)
@@ -113,15 +120,42 @@ class CreateStore {
   echoTemplate = (data) => {
     const pageItem = this.getCurrentPage()
     pageItem.pageAngle = data.pageAngle
-    pageItem.audio = data.audio
     pageItem.canvasData = data.canvasData
     pageItem.filterKey = data.filterKey
     pageItem.filterStyle = data.filterStyle
     pageItem.opacity = data.opacity
     pageItem.rectColor = data.rectColor
-    this.workspace.loadFromJSON(pageItem, true)
+    this.workspace.loadFromJSON(pageItem)
+  }
+  createPageItemStore = (data) => {
+    const page = new PageItemStore()
+    page.id = data.id || uuid()
+    page.pageAngle = data.pageAngle || 0
+    page.showAllFilter = data.showAllFilter || false
+    page.filterKey = data.filterKey || 'normal'
+    page.filterStyle = data.filterStyle || {}
+    page.rectColor = data.rectColor || {
+      type: 'bg',
+      color: '#fff'
+    }
+    page.opacity = data.opacity || 0
+    page.canvasData = data.canvasData || null
+    return page
+  }
+  setDetail = (data) => {
+    this.audio = data.audio
+    this.loadingPage = data.loadingPage
+    if (data.pageList && data.pageList.length) {
+      this.pageList = data.pageList.map(item => {
+        return this.createPageItemStore(item)
+      })
+    } else {
+      this.pageList = [new PageItemStore()]
+    }
+    this.changePage(0)
   }
   clearStore = () => {
+    this.id = null
     this.leftNavScroll = null
     this.attrScroll = null
     this.comScroll = null

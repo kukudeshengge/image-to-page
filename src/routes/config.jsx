@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom'
 import Login from '../pages/login'
 import Home from '../pages/home'
 import Create from '../pages/create'
@@ -22,6 +23,10 @@ const routes = [
     title: '主页',
     children: [
       {
+        path: '/',
+        element: <Navigate to="/myProduct"/>
+      },
+      {
         path: '/myProduct',
         element: <MyProduct/>,
         title: '我的作品'
@@ -44,7 +49,7 @@ const routes = [
     title: '预览'
   },
   {
-    path: '/create',
+    path: '/create/:id',
     element: <Create/>,
     title: '新建页面'
   }

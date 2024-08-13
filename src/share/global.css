@@ -22,3 +22,43 @@ html, body, #root {
 :where(.css-dev-only-do-not-override-98ntnt).ant-btn:not(:disabled):focus-visible {
     outline: none;
 }
+
+.splitting li {
+    --name: jumping;
+    --dur: 1200ms;
+    --del: calc(var(--item-index) * 0.075s);
+    --tf: cubic-bezier(0.165, 0.44, 0.64, 1);
+    animation-delay: var(--del);
+    animation-direction: var(--dir, normal);
+    animation-duration: var(--dur);
+    animation-iteration-count: var(--it, infinite);
+    animation-name: var(--name);
+    animation-timing-function: var(--tf);
+    animation-fill-mode: var(--fill, forwards);
+    display: inline-block;
+    position: relative;
+    transform-origin: 50% 100%;
+    z-index: 1;
+}
+
+@keyframes jumping {
+    20% {
+        transform: translateY(1%) scaleY(0.8);
+    }
+    40% {
+        transform: translateY(-100%) scaleY(1.6);
+    }
+    50% {
+        transform: translateY(10%) scaleY(0.6);
+    }
+    70% {
+        transform: translateY(-5%) scaleY(1);
+    }
+    80%, 100% {
+        transform: translateY(0) scaleY(1);
+    }
+}
+
+iframe {
+    display: none !important;
+}

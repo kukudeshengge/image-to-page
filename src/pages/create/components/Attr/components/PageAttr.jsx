@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { Radio, Slider, InputNumber, Row, Col, Button } from 'antd'
@@ -47,11 +47,16 @@ const LinearPreview = observer((props) => {
 
 const PageAttr = (props) => {
   const { attrScroll } = props
-  const { workspace } = createStore
+  const { workspace, audio } = createStore
   const pageStore = createStore.getCurrentPage()
-  const { rectColor, pageAngle, opacity, filterKey, showAllFilter, audio } = pageStore
+  const { rectColor, pageAngle, opacity, filterKey, showAllFilter } = pageStore
   const disabledAngle = rectColor.type !== 'bg-linear'
   const [bgType, setBgType] = useState(rectColor.type === 'bg-linear' ? 1 : 0)
+  
+  useEffect(() => {
+    setBgType(rectColor.type === 'bg-linear' ? 1 : 0)
+  }, [rectColor])
+  
   // bg color type change
   const onBgTypeChange = (e) => {
     setBgType(e.target.value)
@@ -108,7 +113,7 @@ const PageAttr = (props) => {
   }
   // 修改背景音乐
   const changeAudio = () => {
-    workspace.add.addAudio()
+    workspace.add.uploadAudio()
   }
   const renderFilterList = showAllFilter ? filterList : filterList.slice(0, 6)
   
@@ -214,7 +219,7 @@ const PageAttr = (props) => {
              src="https://ossprod.jrdaimao.com/file/1721295810530478.svg" alt=""/>
       </div>
       <div className={cs('page-attr-share-title')} style={{ margin: '30px 0 20px 0' }}>
-        <span className={cs('page-attr-share-title-text')}>页面音乐</span>
+        <span className={cs('page-attr-share-title-text')}>背景音乐</span>
       </div>
       <div className={cs('audio-wrap')}>
         <Button

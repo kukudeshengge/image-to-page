@@ -14,7 +14,7 @@ const ImageText = () => {
   const { data, isLoading } = useQueryResourceList({
     type: 'image-text',
     onSuccess: () => {
-      setTimeout(() => createStore.leftNavScroll.refresh())
+      setTimeout(() => createStore.leftNavScroll?.refresh())
     }
   })
   const onClick = (item) => {

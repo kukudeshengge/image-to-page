@@ -31,11 +31,11 @@ const Animation = () => {
       scrollbars: true,
       preventDefault: false
     })
-    return () => {
-      animationScroll.current.destroy()
-      scroll.destroy()
-      scroll = null
-    }
+    // return () => {
+    //   animationScroll.current.destroy()
+    //   scroll.destroy()
+    //   scroll = null
+    // }
   }, [])
   
   useEffect(() => {
@@ -53,6 +53,7 @@ const Animation = () => {
       item[key] = value
       return [...prevState]
     })
+    createStore.modifiedCanvas()
   }
   
   const previewAnimation = item => {
@@ -67,6 +68,7 @@ const Animation = () => {
     const activeObject = selectObjects[0]
     activeObject.animateList = list
     setAnimationList(list)
+    createStore.modifiedCanvas()
   }
   
   const deleteAnimate = (item) => {

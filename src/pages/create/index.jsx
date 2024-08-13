@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from 'antd'
 import { tools } from './config'
 import Nav from './components/Nav'
@@ -12,24 +12,45 @@ import { createStore } from '../../store/create'
 import DownloadPage from './components/DownloadPage'
 import ObjectAttr from './components/ObjectAttr'
 import useSave from './hooks/useSave'
+import { useImageDetail } from './hooks'
+import PageLoading from '../../components/PageLoading'
+import EmptyImage from './components/EmptyImage'
 
 const cs = classNames.bind(styles)
 
 const Create = () => {
   const { workspace } = createStore
-  const { onPreview, onSave, onPublish,uploadToTemplate } = useSave()
+  const { id } = useParams()
+  const { onPreview, onSave, onPublish, uploadToTemplate } = useSave()
+  const { data, isLoading } = useImageDetail({ id })
   const nav = useNavigate()
+  
   const goBack = () => nav(-1)
   const addObject = item => {
     const func = workspace.add[item.type]
     if (!func) return
     func()
   }
+  
   useEffect(() => {
+    createStore.id = id
     return () => {
       createStore.clearStore()
     }
   }, [])
+  
+  useEffect(() => {
+    if (data && workspace) {
+      createStore.setDetail(data)
+    }
+  }, [data, workspace])
+  
+  if (isLoading) {
+    return <PageLoading/>
+  }
+  if (!data) {
+    return <EmptyImage/>
+  }
   return (
     <div className={cs('create')}>
       <div className={cs('header')}>

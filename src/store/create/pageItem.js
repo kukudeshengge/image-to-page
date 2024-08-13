@@ -13,10 +13,6 @@ export class PageItemStore {
   }
   opacity = 0 // 透明度
   canvasData = null // 画布data
-  audio = {
-    name: '',
-    src: ''
-  }
   constructor () {
     makeAutoObservable(this)
   }

@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { Form, Select, DatePicker, Input, Row, Col, Button, Pagination, Dropdown, Spin, Modal } from 'antd'
+import React, { useEffect, useRef } from 'react'
+import { Form, Select, DatePicker, Input, Row, Col, Button, Pagination, Dropdown, Spin, Modal, message } from 'antd'
 import styles from './index.module.less'
 import classNames from 'classnames/bind'
 import IScroll from 'iscroll'
 import { useNavigate } from 'react-router-dom'
 import useGetCardStyle from '../../../../hooks/useGetCardStyle'
+import { addImage } from '../../../../api/image'
+import { useImageList } from './hooks'
+import { useUpdateEffect } from 'ahooks'
 
 const { RangePicker } = DatePicker
 const cs = classNames.bind(styles)
@@ -13,18 +16,30 @@ const MyProduct = () => {
   const nav = useNavigate()
   const [form] = Form.useForm()
   const { getItemStyle } = useGetCardStyle()
-  const [list, setList] = useState(['add', 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  const { data, isLoading } = useImageList()
+  const scroll = useRef()
   
   useEffect(() => {
-    new IScroll('#my-product-list-scroll', {
-      mouseWheel: true,
-      scrollbars: true,
-      preventDefault: false
+    setTimeout(() => {
+      scroll.current = new IScroll('#my-product-list-scroll', {
+        mouseWheel: true,
+        scrollbars: true,
+        preventDefault: false
+      })
     })
   }, [])
   
-  const create = () => {
-    nav('/create')
+  useUpdateEffect(() => {
+    setTimeout(() => scroll.current.refresh())
+  }, [data])
+  
+  const create = async () => {
+    try {
+      const res = await addImage()
+      nav(`/create/${res}`)
+    } catch (err) {
+      message.warning(err.message)
+    }
   }
   const reset = () => {
     form.resetFields()
@@ -44,31 +59,35 @@ const MyProduct = () => {
       }
     })
   }
-  const editItem = () => {
-    nav('/create')
+  const editItem = (item) => {
+    nav(`/create/${item._id}`)
   }
   const goDataView = () => {
-    nav('/dataView')
+    message.warning('功能正在开发中')
+    // nav('/dataView')
   }
   const preview = () => {
     nav('/preview')
   }
-  const items = [
-    {
-      key: 'edit',
-      label: <div onClick={editItem} className={cs('drop-item')}>
-        <img src="https://ossprod.jrdaimao.com/file/172077797381352.svg" alt=""/>
-        <span>编辑</span>
-      </div>
-    },
-    {
-      key: 'delete',
-      label: <div onClick={deleteItem} className={cs('drop-item')}>
-        <img src="https://ossprod.jrdaimao.com/file/1720777985608319.svg" alt=""/>
-        <span>删除</span>
-      </div>
-    }
-  ]
+  const items = (item) => {
+    return [
+      {
+        key: 'edit',
+        label: <div onClick={() => editItem(item)} className={cs('drop-item')}>
+          <img src="https://ossprod.jrdaimao.com/file/172077797381352.svg" alt=""/>
+          <span>编辑</span>
+        </div>
+      },
+      {
+        key: 'delete',
+        label: <div onClick={() => deleteItem(item)} className={cs('drop-item')}>
+          <img src="https://ossprod.jrdaimao.com/file/1720777985608319.svg" alt=""/>
+          <span>删除</span>
+        </div>
+      }
+    ]
+  }
+  
   return (
     <div className={cs('my-product')}>
       <div className={cs('my-product-form')}>
@@ -102,71 +121,72 @@ const MyProduct = () => {
           </Row>
         </Form>
       </div>
-      {/*<Spin spinning={false} style={{ background:'red' }}>*/}
       <div className={cs('my-product-list-scroll')} id="my-product-list-scroll">
-        <div>
-          <div style={{ height: 25 }}></div>
-          <div className={cs('my-product-list')}>
-            
-            {
-              list.map((item, index) => {
-                const styles = getItemStyle(index)
-                if (item === 'add') {
-                  return <div key={index} style={styles} className={cs('add-product')} onClick={create}>
-                    <img src="https://ossprod.jrdaimao.com/file/1720767250766286.svg" alt=""/>
-                    <div className={cs('add-product-title')}>创建作品</div>
-                    <div className={cs('add-product-desc')}>快来开始创作你的作品吧</div>
-                  </div>
-                }
-                return <div style={styles} className={cs('product-item')} key={index}>
-                  <div className={cs('product-item-top')}>
-                    <img
-                      src="https://img1.baidu.com/it/u=1875615239,1754113072&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=584"
-                      alt=""/>
-                    <div className={cs('product-item-status')}>未发布</div>
-                    <div className={cs('product-item-mask-handle', `product-item-mask-handle-${index}`)}>
-                      <Dropdown
-                        getPopupContainer={() => document.querySelector(`.product-item-mask-handle-${index}`)}
-                        overlayClassName={cs('product-dropdown')}
-                        menu={{ items }}
-                        placement="bottomRight"
-                      >
-                        <img className={cs('more')} src="https://ossprod.jrdaimao.com/file/1720770559192211.svg"
-                             alt=""/>
-                      </Dropdown>
-                      <div onClick={preview} className={cs('product-item-preview-button')}>预览</div>
-                      <div onClick={goDataView} className={cs('product-item-preview-button')}>数据</div>
+        <Spin spinning={isLoading}>
+          <div style={{ minHeight: 400 }}>
+            <div style={{ height: 25 }}></div>
+            <div className={cs('my-product-list')}>
+              {
+                data.map((item, index) => {
+                  const styles = getItemStyle(index)
+                  if (item === 'add') {
+                    return <div key={index} style={styles} className={cs('add-product')} onClick={create}>
+                      <img src="https://ossprod.jrdaimao.com/file/1720767250766286.svg" alt=""/>
+                      <div className={cs('add-product-title')}>创建作品</div>
+                      <div className={cs('add-product-desc')}>快来开始创作你的作品吧</div>
+                    </div>
+                  }
+                  return <div style={styles} className={cs('product-item')} key={index}>
+                    <div className={cs('product-item-top')}>
+                      <img src={item.url} alt=""/>
+                      <div className={cs('product-item-status')}>未发布</div>
+                      <div className={cs('product-item-mask-handle', `product-item-mask-handle-${index}`)}>
+                        <Dropdown
+                          getPopupContainer={() => document.querySelector(`.product-item-mask-handle-${index}`)}
+                          overlayClassName={cs('product-dropdown')}
+                          menu={{ items:items(item) }}
+                          placement="bottomRight"
+                        >
+                          <img
+                            className={cs('more')}
+                            src="https://ossprod.jrdaimao.com/file/1720770559192211.svg"
+                            alt=""
+                          />
+                        </Dropdown>
+                        <div onClick={preview} className={cs('product-item-preview-button')}>预览</div>
+                        <div onClick={goDataView} className={cs('product-item-preview-button')}>数据</div>
+                      </div>
+                    </div>
+                    <div className={cs('product-item-content')}>
+                      <div className={cs('product-item-tags')}>
+                        <div>{item.tag}</div>
+                      </div>
+                      <div className={cs('product-item-title')}>{item.name}</div>
+                      <div className={cs('product-item-time')}>
+                        {item.startTime}{item.endTime ? ` ~ ${item.endTime}` : ''}
+                      </div>
+                    </div>
+                    <div className={cs('product-item-statistics')}>
+                      <div>
+                        <span>0</span>
+                        <span>浏览</span>
+                      </div>
+                      <div>
+                        <span>0</span>
+                        <span>访客</span>
+                      </div>
                     </div>
                   </div>
-                  <div className={cs('product-item-content')}>
-                    <div className={cs('product-item-tags')}>
-                      <div>H5</div>
-                    </div>
-                    <div className={cs('product-item-title')}>蓝色商务医院医疗函蓝色商务医院医疗邀请函医学技术论坛峰会展会邀请函
-                    </div>
-                    <div className={cs('product-item-time')}>2024-07-12 ~ 2024-07-22</div>
-                  </div>
-                  <div className={cs('product-item-statistics')}>
-                    <div>
-                      <span>0</span>
-                      <span>浏览</span>
-                    </div>
-                    <div>
-                      <span>0</span>
-                      <span>访客</span>
-                    </div>
-                  </div>
-                </div>
-              })
-            }
+                })
+              }
+            </div>
+            {/*<div className={cs('my-product-pagination')}>*/}
+            {/*  <Pagination total={100}/>*/}
+            {/*</div>*/}
+            <div style={{ height: 25 }}></div>
           </div>
-          <div className={cs('my-product-pagination')}>
-            <Pagination total={100}/>
-          </div>
-          <div style={{ height: 25 }}></div>
-        </div>
+        </Spin>
       </div>
-      {/*</Spin>*/}
     </div>
   )
 }

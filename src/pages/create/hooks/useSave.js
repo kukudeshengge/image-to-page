@@ -2,12 +2,12 @@ import { createStore } from '../../../store/create'
 import { base64ConvertFile } from '../../../utils'
 import { IMGCLIENT } from '@/utils/ossUtil'
 import { message } from 'antd'
-import { useAddImage } from '../ssr'
+import { useSaveImage } from '../hooks'
 import { uploadResource } from '../../../api/image'
 
 const useSave = () => {
-  const { workspace } = createStore
-  const { trigger, isMutating } = useAddImage()
+  const { workspace, canvas, id } = createStore
+  const { trigger: saveImage, isMutating: saveImageLoading } = useSaveImage()
   const getCanvasData = async () => {
     const base64 = workspace.toImage()
     const file = await base64ConvertFile(base64)
@@ -23,10 +23,12 @@ const useSave = () => {
   }
   // 保存
   const onSave = () => {
-    // trigger({
-    //   a: 1,
-    //   base64ConvertFile: 2
-    // })
+    saveImage({
+      id,
+      audio: createStore.audio,
+      loadingPage: createStore.loadingPage,
+      pageList: createStore.pageList
+    })
   }
   
   // 发布
@@ -37,6 +39,9 @@ const useSave = () => {
   // 上传模板
   const uploadToTemplate = async () => {
     const pageItem = createStore.getCurrentPage()
+    if (canvas.getObjects().length === 1) {
+      return message.warning('啥也没有，你保存集贸！')
+    }
     try {
       const data = await getCanvasData()
       const params = {
@@ -48,8 +53,7 @@ const useSave = () => {
           filterStyle: pageItem.filterStyle,
           rectColor: pageItem.rectColor,
           opacity: pageItem.opacity,
-          canvasData: data.canvasData,
-          audio: pageItem.audio
+          canvasData: data.canvasData
         },
         url: data.url,
         type: 'one-page'

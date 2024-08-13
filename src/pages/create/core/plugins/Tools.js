@@ -172,11 +172,6 @@ class Tools extends Base {
   }
   uploadGroup = async (type) => {
     try {
-      message.open({
-        type: 'loading',
-        content: '上传中...',
-        duration: 0
-      })
       const object = this.canvas.getActiveObject()
       object.clone(async cloned => {
         cloned.set({ scaleX: 2, scaleY: 2 })
@@ -188,13 +183,11 @@ class Tools extends Base {
           data: object.toObject(ExportAttrs),
           type
         })
-        message.destroy()
         message.success('上传成功')
         cloned = null
       })
     } catch (err) {
       console.log(err)
-      message.destroy()
       message.warning(err.message)
     }
   }
