@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { useNavigate } from 'react-router-dom'
@@ -9,14 +9,17 @@ const cs = classNames.bind(styles)
 
 const Header = () => {
   const { data } = useGetUserInfo()
+  const nav = useNavigate()
+  const logout = (e) => {
+    e.preventDefault()
+    localStorage.removeItem('authorization')
+    localStorage.removeItem('role')
+    nav('/login')
+  }
   const items = [
     {
       key: '1',
-      label: (
-        <a target="_self" rel="noopener noreferrer" href="/login">
-          退出登录
-        </a>
-      )
+      label: (<a onClick={logout} href="#">退出登录</a>)
     }
   ]
   return (

@@ -54,10 +54,8 @@
 }
 
 .color-wrap {
-  border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid #d9d9d9;
   box-sizing: content-box;
   height: 32px;
 
@@ -65,6 +63,10 @@
     display: inline-block;
     width: 80px;
     height: 32px;
+    border-radius: 6px 0 0 6px;
+    border: 1px solid #d9d9d9;
+    box-sizing: border-box;
+    border-right: none;
   }
 
   .color-icon {
@@ -73,6 +75,9 @@
     width: 32px;
     background: #f5f7fb;
     position: relative;
+    border: 1px solid #d9d9d9;
+    border-left: none;
+    border-radius: 0 6px 6px 0;
 
     img {
       position: absolute;
@@ -127,6 +132,7 @@
     background: #f5f5f5;
   }
 }
+
 .fast-handle-item-wrap {
   width: 100%;
   position: absolute;
@@ -137,11 +143,13 @@
   left: 0;
   height: 56px;
   background: #fff;
-  box-shadow: 0 0 4px 0 rgba(0,0,0,.16);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16);
   top: 32px;
 }
+
 .align-fix {
   display: flex;
+
   div {
     width: 32px;
     height: 32px;
@@ -153,12 +161,16 @@
     border-radius: 3px;
   }
 }
+
 .space-fix {
   display: flex;
   align-items: center;
+
   > span {
     margin-right: 10px;
     color: #333333;
     font-size: 14px;
   }
 }
+
+

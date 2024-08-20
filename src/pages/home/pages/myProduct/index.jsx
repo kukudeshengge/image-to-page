@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Form, Select, DatePicker, Input, Row, Col, Button, Pagination, Dropdown, Spin, Modal, message } from 'antd'
 import styles from './index.module.less'
 import classNames from 'classnames/bind'
@@ -6,8 +6,9 @@ import IScroll from 'iscroll'
 import { useNavigate } from 'react-router-dom'
 import useGetCardStyle from '../../../../hooks/useGetCardStyle'
 import { addImage } from '../../../../api/image'
-import { useImageList } from './hooks'
+import { useImageDelete, useImageList } from './hooks'
 import { useUpdateEffect } from 'ahooks'
+import ProductItemThumb from './ProductItemThumb'
 
 const { RangePicker } = DatePicker
 const cs = classNames.bind(styles)
@@ -16,16 +17,16 @@ const MyProduct = () => {
   const nav = useNavigate()
   const [form] = Form.useForm()
   const { getItemStyle } = useGetCardStyle()
-  const { data, isLoading } = useImageList()
+  const [formParams, setFormParams] = useState({})
+  const { data, isLoading, mutate } = useImageList(formParams)
+  const { trigger: triggerDelete } = useImageDelete()
   const scroll = useRef()
   
   useEffect(() => {
-    setTimeout(() => {
-      scroll.current = new IScroll('#my-product-list-scroll', {
-        mouseWheel: true,
-        scrollbars: true,
-        preventDefault: false
-      })
+    scroll.current = new IScroll('#my-product-list-scroll', {
+      mouseWheel: true,
+      scrollbars: true,
+      preventDefault: false
     })
   }, [])
   
@@ -43,19 +44,26 @@ const MyProduct = () => {
   }
   const reset = () => {
     form.resetFields()
+    setFormParams({})
   }
-  const search = () => {
-    console.log('search')
+  const search = async () => {
+    const data = form.getFieldsValue()
+    setFormParams(data)
   }
-  const deleteItem = () => {
+  const deleteItem = (item) => {
     Modal.confirm({
       title: '确定删除该作品吗？',
       content: '删除后，用户将不可访问此页面',
       cancelText: '取消',
       okText: '确定',
       autoFocusButton: null,
-      onOk: () => {
-      
+      onOk: async () => {
+        try {
+          await triggerDelete({ id: item._id })
+          await mutate()
+        } catch (err) {
+          message.warning(err.message)
+        }
       }
     })
   }
@@ -66,8 +74,8 @@ const MyProduct = () => {
     message.warning('功能正在开发中')
     // nav('/dataView')
   }
-  const preview = () => {
-    nav('/preview')
+  const preview = (item) => {
+    nav(`/preview/${item._id}`)
   }
   const items = (item) => {
     return [
@@ -92,32 +100,33 @@ const MyProduct = () => {
     <div className={cs('my-product')}>
       <div className={cs('my-product-form')}>
         <Form
+          onFinish={search}
           form={form}
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
         >
           <Row>
             <Col span={8}>
-              <Form.Item label="作品名称">
+              <Form.Item label="作品名称" name="name">
                 <Input style={{ width: '100%' }} placeholder="请输入名称"/>
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="作品类型">
+              <Form.Item label="作品类型" name="tag">
                 <Select style={{ width: '100%' }} placeholder="请选择类型">
-                  <Select.Option value={1}>123</Select.Option>
+                  <Select.Option value={'h5'}>H5</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="作品有效期">
+              <Form.Item label="作品有效期" name="time">
                 <RangePicker style={{ width: '100%' }} placeholder="请选择开始和结束日期"/>
               </Form.Item>
             </Col>
           </Row>
           <Row justify="end">
             <Button onClick={reset} style={{ marginRight: 10 }}>重置</Button>
-            <Button onClick={search} type="primary">查询</Button>
+            <Button htmlType="submit" type="primary">查询</Button>
           </Row>
         </Form>
       </div>
@@ -138,13 +147,18 @@ const MyProduct = () => {
                   }
                   return <div style={styles} className={cs('product-item')} key={index}>
                     <div className={cs('product-item-top')}>
-                      <img src={item.url} alt=""/>
-                      <div className={cs('product-item-status')}>未发布</div>
+                      <ProductItemThumb data={item.firstPageData}/>
+                      <div
+                        style={{ background: item.status === 1 ? '#1261ff' : '#999' }}
+                        className={cs('product-item-status')}
+                      >
+                        {item.statusTitle}
+                      </div>
                       <div className={cs('product-item-mask-handle', `product-item-mask-handle-${index}`)}>
                         <Dropdown
                           getPopupContainer={() => document.querySelector(`.product-item-mask-handle-${index}`)}
                           overlayClassName={cs('product-dropdown')}
-                          menu={{ items:items(item) }}
+                          menu={{ items: items(item) }}
                           placement="bottomRight"
                         >
                           <img
@@ -153,7 +167,7 @@ const MyProduct = () => {
                             alt=""
                           />
                         </Dropdown>
-                        <div onClick={preview} className={cs('product-item-preview-button')}>预览</div>
+                        <div onClick={() => preview(item)} className={cs('product-item-preview-button')}>预览</div>
                         <div onClick={goDataView} className={cs('product-item-preview-button')}>数据</div>
                       </div>
                     </div>

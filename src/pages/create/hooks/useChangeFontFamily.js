@@ -28,25 +28,26 @@ const useChangeFontFamily = () => {
     // 已经加载过不需要重新加载 直接设置字体
     if (Font.has(item.key)) {
       setAttr({ fontFamily: item.key })
-      return
+      return Promise.resolve()
     }
-    const { key: name, fontlibfile: src } = item
-    // setLoading(true)
-    const styleContent = `@font-face { font-family: ${name}; src: url('${src}'); }`
-    const style = document.createElement('style')
-    style.innerHTML = styleContent
-    document.body.appendChild(style)
-    const font = new FontFaceObserver(name)
-    return font.load(name, 2000000).then(function () {
-      Font.set(name, true)
-      setAttr({ fontFamily: name })
-      createStore.modifiedCanvas()
-      // setLoading(false)
-    }, function (e) {
-      // setLoading(false)
-      document.body.removeChild(style)
-      console.log('Font is not available', e)
+    return new Promise((resolve, reject) => {
+      const { key: name, fontlibfile: src } = item
+      const styleContent = `@font-face { font-family: ${name}; src: url('${src}'); }`
+      const style = document.createElement('style')
+      style.innerHTML = styleContent
+      document.body.appendChild(style)
+      const font = new FontFaceObserver(name)
+      return font.load(name, 2000000).then(function () {
+        Font.set(name, true)
+        setAttr({ fontFamily: name })
+        createStore.modifiedCanvas()
+        resolve()
+      }, function (e) {
+        document.body.removeChild(style)
+        reject()
+      })
     })
+    
   }, [setAttr])
   /**
    * 加载多个字体

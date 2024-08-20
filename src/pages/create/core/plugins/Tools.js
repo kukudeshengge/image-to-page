@@ -6,22 +6,8 @@ import { uploadResource } from '../../../../api/image'
 import { message } from 'antd'
 import { base64ConvertFile } from '../../../../utils'
 import { IMGCLIENT } from '@/utils/ossUtil'
-import { ExportAttrs } from '../workspace'
-
-const lockAttrs = [
-  'lockMovementX',
-  'lockMovementY',
-  'lockRotation',
-  'lockScalingX',
-  'lockScalingY',
-  'hasControls',
-  'selectable',
-  'editable'
-]
-const copyAttrs = [
-  'triggered',
-  'animateList'
-]
+import { ExportAttrs } from '../../../../config'
+import { copyAttrs, lockAttrs } from '../../../../config'
 
 /**
  * 一些常用工具
@@ -171,9 +157,9 @@ class Tools extends Base {
     // })
   }
   uploadGroup = async (type) => {
-    try {
-      const object = this.canvas.getActiveObject()
-      object.clone(async cloned => {
+    const object = this.canvas.getActiveObject()
+    object.clone(async cloned => {
+      try {
         cloned.set({ scaleX: 2, scaleY: 2 })
         const base64 = cloned.toDataURL()
         const file = await base64ConvertFile(base64)
@@ -185,11 +171,11 @@ class Tools extends Base {
         })
         message.success('上传成功')
         cloned = null
-      })
-    } catch (err) {
-      console.log(err)
-      message.warning(err.message)
-    }
+      } catch (err) {
+        console.log(err)
+        message.warning(err.message)
+      }
+    })
   }
   uploadToImageText = () => {
     this.uploadGroup('image-text')

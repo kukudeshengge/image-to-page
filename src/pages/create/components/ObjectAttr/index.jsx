@@ -17,7 +17,7 @@ const MoveWrap = () => {
   
   const changeKey = item => {
     createStore.comSettingActiveKey = item.value
-    setTimeout(() => comScroll.refresh())
+    comScroll.refresh()
   }
   
   useEffect(() => {
@@ -25,7 +25,7 @@ const MoveWrap = () => {
     createStore.comScroll = new IScroll('#object-attr-scroll', {
       mouseWheel: true,
       scrollbars: true,
-      preventDefault: false
+      preventDefault: false,
     })
     const defaultX = sessionStorage.getItem('ObjectAttrX')
     const defaultY = sessionStorage.getItem('ObjectAttrY')

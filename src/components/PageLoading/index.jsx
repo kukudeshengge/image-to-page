@@ -2,22 +2,24 @@ import React, { useEffect, useState } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import Splitting from 'splitting'
+import { observer } from 'mobx-react-lite'
+import { createStore } from '../../store/create'
 
 const cs = classNames.bind(styles)
 
 const PageLoading = () => {
-  const [loading, setLoading] = useState(true)
+  const { canvasLoading } = createStore
+  
   useEffect(() => {
     Splitting({
       target: '#page-loading-container',
       by: 'items',
       matching: 'li'
     })
-    setLoading(false)
   }, [])
   
   return (
-    <div className={cs('page-loading')} style={{ opacity: loading ? 0 : 1 }}>
+    <div className={cs('page-loading', { 'opacity-loading': !canvasLoading })}>
       <div className={cs('container')} id="page-loading-container">
         <ul>
           <li>搭</li>
@@ -32,4 +34,4 @@ const PageLoading = () => {
   )
 }
 
-export default PageLoading
+export default observer(PageLoading)

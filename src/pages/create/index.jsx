@@ -15,22 +15,18 @@ import useSave from './hooks/useSave'
 import { useImageDetail } from './hooks'
 import PageLoading from '../../components/PageLoading'
 import EmptyImage from './components/EmptyImage'
+import useGetUserInfo from '../../components/Header/hooks'
+import Publish from './components/Publish'
 
 const cs = classNames.bind(styles)
 
 const Create = () => {
   const { workspace } = createStore
-  const { id } = useParams()
-  const { onPreview, onSave, onPublish, uploadToTemplate } = useSave()
-  const { data, isLoading } = useImageDetail({ id })
   const nav = useNavigate()
-  
-  const goBack = () => nav(-1)
-  const addObject = item => {
-    const func = workspace.add[item.type]
-    if (!func) return
-    func()
-  }
+  const { id } = useParams()
+  const { data: userInfo } = useGetUserInfo()
+  const { onSave, uploadToTemplate } = useSave()
+  const { data, isLoading } = useImageDetail({ id })
   
   useEffect(() => {
     createStore.id = id
@@ -45,16 +41,28 @@ const Create = () => {
     }
   }, [data, workspace])
   
-  if (isLoading) {
-    return <PageLoading/>
+  const addObject = item => {
+    const func = workspace.add[item.type]
+    func && func()
   }
-  if (!data) {
+  
+  const onPreview = () => {
+    onSave().then(() => {
+      nav(`/preview/${id}`)
+    })
+  }
+  
+  const onPublish = () => {
+    createStore.publishOpen = true
+  }
+  
+  if (!data && !isLoading) {
     return <EmptyImage/>
   }
   return (
     <div className={cs('create')}>
       <div className={cs('header')}>
-        <div className={cs('back')} onClick={goBack}>
+        <div className={cs('back')} onClick={() => nav(-1)}>
           <img draggable={false} src="https://ossprod.jrdaimao.com/file/1721035943933168.svg" alt=""/>
           <img draggable={false} src="https://ossprod.jrdaimao.com/file/1721036074203577.svg" alt=""/>
           <span>返回</span>
@@ -71,10 +79,11 @@ const Create = () => {
           }
         </div>
         <div className={cs('buttons')}>
-          <Button onClick={() => uploadToTemplate()}>保存模板</Button>
-          <Button onClick={() => onPreview}>预览</Button>
+          {userInfo && userInfo.role === 'admin' ?
+            <Button onClick={() => uploadToTemplate()}>保存模板</Button> : null}
+          <Button onClick={onPreview}>预览</Button>
           <Button onClick={() => onSave()} type="primary">保存</Button>
-          <Button onClick={() => onPublish()} type="primary">发布</Button>
+          <Button onClick={onPublish} type="primary">发布</Button>
         </div>
       </div>
       <div className={cs('content')}>
@@ -84,6 +93,8 @@ const Create = () => {
       </div>
       <DownloadPage/>
       <ObjectAttr/>
+      <Publish/>
+      <PageLoading/>
     </div>
   )
 }

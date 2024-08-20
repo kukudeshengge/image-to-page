@@ -9,6 +9,7 @@ import { createStore } from '../../../../store/create'
 import { createAnimate } from '../../components/ObjectAttr/components/Animation/config'
 import { createVerticalText } from '../objects/VerticalText'
 import { ArcText } from '../objects/ArcText'
+import { loadResource } from '../../../../utils/load'
 
 class Add extends Base {
   uploading = false
@@ -239,15 +240,19 @@ class Add extends Base {
     this.firstAddObject(text)
   }
   jsonGroupToObject = (data) => {
-    new fabric.Group.fromObject(data, (group) => {
-      group.set({
-        originX: 'center',
-        originY: 'center'
+    return new Promise(async (resolve) => {
+      await loadResource(data)
+      new fabric.Group.fromObject(data, (group) => {
+        group.set({
+          originX: 'center',
+          originY: 'center'
+        })
+        this.canvas.add(group).setActiveObject(group)
+        this.workspace.align.center()
+        this.workspace.animation.carryAnimations()
+        this.canvas.renderAll()
+        resolve()
       })
-      this.canvas.add(group).setActiveObject(group)
-      this.workspace.align.center()
-      this.workspace.animation.carryAnimations()
-      this.canvas.renderAll()
     })
   }
 }

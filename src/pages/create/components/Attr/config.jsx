@@ -7,7 +7,6 @@ import {
   ScaleLoader,
   SyncLoader,
   GridLoader
-  
 } from 'react-spinners'
 import PageAttr from './components/PageAttr'
 import CoverageList from './components/CoverageList'

@@ -1,21 +1,55 @@
 import React, { useEffect, useState } from 'react'
 import styles from './index.module.less'
 import classNames from 'classnames/bind'
-import { InputNumber, Select, Tooltip } from 'antd'
+import { Select, Slider, Tooltip } from 'antd'
 import PopoverColor from '../../../Attr/components/PopoverColor'
-import { textFastHandleList, textFormatList } from './config'
+import { fontSizeList, textFastHandleList, textFormatList } from './config'
 import { useFontList } from './fetch'
 import useChangeFontFamily from '../../../../hooks/useChangeFontFamily'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../../store/create'
 import { useSetState } from 'ahooks'
 import useAttr from '../../../../hooks/useAttr'
+import { orderList, alignList } from '../GroupButton/config'
+import GroupButton, { CustomCollapse } from '../GroupButton'
+import { hideLoading, showLoading } from '../../../../../../utils/msgLoading'
+import Outline from '../Outline'
+import Shadow from '../Shadow'
+import Position from '../Position'
 
 const { Option } = Select
 const cs = classNames.bind(styles)
 
+const items = [
+  {
+    key: 'align',
+    label: '对齐方式',
+    children: <GroupButton list={alignList}/>
+  },
+  {
+    key: 'order',
+    label: '层级',
+    children: <GroupButton list={orderList}/>
+  },
+  {
+    key: 'outLine',
+    label: '描边',
+    children: <Outline/>
+  },
+  {
+    key: 'shadow',
+    label: '阴影',
+    children: <Shadow/>
+  },
+  {
+    key: 'pos',
+    label: '位置和角度',
+    children: <Position/>
+  }
+]
+
 const Text = () => {
-  const { selectObjects } = createStore
+  const { selectObjects, comScroll } = createStore
   const [showFixType, setShowFixType] = useState(null)
   const [state, setState] = useSetState({
     fontFamily: undefined,
@@ -25,7 +59,10 @@ const Text = () => {
     fontWeight: '',
     fontStyle: '',
     underline: '',
-    linethrough: ''
+    linethrough: '',
+    charSpacing: 0,
+    lineHeight: 0,
+    openCollapseKeys: ['']
   })
   const { setAttr } = useAttr()
   const { data } = useFontList()
@@ -34,7 +71,6 @@ const Text = () => {
   useEffect(() => {
     if (!selectObjects) return
     const activeObject = selectObjects[0]
-    
     setState({
       fontFamily: activeObject.fontFamily === 'serif' ? undefined : activeObject.fontFamily,
       fontSize: activeObject.fontSize,
@@ -44,16 +80,18 @@ const Text = () => {
       fontStyle: activeObject.fontStyle,
       underline: activeObject.underline,
       linethrough: activeObject.linethrough,
-      textAlign: activeObject.textAlign
+      textAlign: activeObject.textAlign,
+      charSpacing: activeObject.charSpacing,
+      lineHeight: activeObject.lineHeight,
+      openCollapseKeys: activeObject.openCollapseKeys || ['align', 'order']
     })
+    setTimeout(() => comScroll?.refresh())
   }, [selectObjects])
   
   const onClick = (e, item) => {
     e.stopPropagation()
     if (item.renderContent) {
-      setShowFixType(prev => {
-        return prev === item.type ? null : item.type
-      })
+      setShowFixType(item.type)
       return
     }
     setShowFixType(null)
@@ -72,6 +110,24 @@ const Text = () => {
       case 'linethrough':
         asyncEditAttr({ linethrough: !state.linethrough })
         break
+      case 'clear':
+        asyncEditAttr({
+          fontWeight: 'normal',
+          fontStyle: 'normal',
+          underline: false,
+          linethrough: false,
+          textAlign: 'left',
+          charSpacing: 0,
+          lineHeight: 1.2
+        })
+        break
+      default:
+        return false
+    }
+  }
+  
+  const onSecondClick = (type, value) => {
+    switch (type) {
       case 'left':
         asyncEditAttr({ textAlign: 'left' })
         break
@@ -81,13 +137,11 @@ const Text = () => {
       case 'right':
         asyncEditAttr({ textAlign: 'right' })
         break
-      case 'clear':
-        asyncEditAttr({
-          fontWeight: 'normal',
-          fontStyle: 'normal',
-          underline: false,
-          linethrough: false
-        })
+      case 'textSpace':
+        asyncEditAttr({ charSpacing: value })
+        break
+      case 'colSpace':
+        asyncEditAttr({ lineHeight: value })
         break
       default:
         return false
@@ -102,9 +156,11 @@ const Text = () => {
   }
   
   // 修改字体样式
-  const onStyleChange = (e, options) => {
-    runChange(options.otherOptions)
+  const onStyleChange = async (e, options) => {
+    showLoading('正在切换字体')
     setState({ fontFamily: e })
+    await runChange(options.otherOptions)
+    hideLoading()
   }
   
   // 修改字体size
@@ -140,6 +196,10 @@ const Text = () => {
     createStore.modifiedCanvas()
   }
   
+  const onWrapClick = () => {
+    setShowFixType(null)
+  }
+  
   const getFastHandleActive = (item) => {
     switch (item.type) {
       case 'weight':
@@ -156,14 +216,23 @@ const Text = () => {
         return state.textAlign === 'justify-center'
       case 'right':
         return state.textAlign === 'right'
+      case 'textSpace':
+        return state.charSpacing
+      case 'colSpace':
+        return state.lineHeight
       default:
         return false
     }
   }
+  const onCollapseChange = (e) => {
+    asyncEditAttr({ openCollapseKeys: e })
+    setTimeout(() => comScroll.refresh(), 300)
+  }
   
   if (!state.fontSize) return null
+  
   return (
-    <div className={cs('text-attr')}>
+    <div className={cs('text-attr')} onClick={onWrapClick}>
       <div className={cs('item-wrap')}>
         <div className={cs('title')}>字体样式</div>
         <Select
@@ -189,22 +258,19 @@ const Text = () => {
             onChange={onSizeChange}
             className={cs('select-size')}
             placeholder={'请选择'}
+            options={fontSizeList}
+          />
+          <span
+            onClick={() => onSizeClickChange('add')}
+            className={cs('add-size-btn')}
           >
-            <Option value={10}>10px</Option>
-            <Option value={12}>12px</Option>
-            <Option value={14}>14px</Option>
-            <Option value={16}>16px</Option>
-            <Option value={18}>18px</Option>
-            <Option value={20}>20px</Option>
-            <Option value={22}>22px</Option>
-            <Option value={24}>24px</Option>
-          </Select>
-          <span onClick={() => onSizeClickChange('add')} className={cs('add-size-btn')}>
-                        <img src="https://ossprod.jrdaimao.com/file/1722846354324978.svg" alt=""/>
-                    </span>
-          <span onClick={() => onSizeClickChange('minus')}>
-                        <img src="https://ossprod.jrdaimao.com/file/1722846367110765.svg" alt=""/>
-                    </span>
+            <img src="https://ossprod.jrdaimao.com/file/1722846354324978.svg" alt=""/>
+          </span>
+          <span
+            onClick={() => onSizeClickChange('minus')}
+          >
+            <img src="https://ossprod.jrdaimao.com/file/1722846367110765.svg" alt=""/>
+          </span>
         </div>
       </div>
       <div className={cs('item-wrap')}>
@@ -226,8 +292,8 @@ const Text = () => {
               style={item.style}
               key={item.id}
             >
-                        {item.title}
-                        </span>
+              {item.title}
+            </span>
           })
         }
       </div>
@@ -241,12 +307,12 @@ const Text = () => {
               className={cs('fast-handle-item')}
             >
               <Tooltip title={item.title} placement={'top'}>
-                <img src={active ? item.selectImage : item.image} alt=""/>
+                <img src={active && item.selectImage ? item.selectImage : item.image} alt=""/>
               </Tooltip>
               {
                 item.renderContent && showFixType === item.type ?
                   <div className={cs('fast-handle-item-wrap')}>
-                    {item.renderContent({ onClick, getFastHandleActive })}
+                    {item.renderContent({ onChange: onSecondClick, getFastHandleActive })}
                   </div> : null
               }
             </div>
@@ -255,15 +321,19 @@ const Text = () => {
       </div>
       <div className={cs('item-wrap')}>
         <div className={cs('title')}>透明度</div>
-        <InputNumber
-          value={state.opacity}
-          onChange={onOpacityChange}
+        <Slider
+          defaultValue={state.opacity}
+          onChangeComplete={onOpacityChange}
           min={0}
           max={100}
           style={{ width: 165 }}
-          addonAfter="%"
         />
       </div>
+      <CustomCollapse
+        onChange={onCollapseChange}
+        activeKey={state.openCollapseKeys}
+        items={items}
+      />
     </div>
   )
 }

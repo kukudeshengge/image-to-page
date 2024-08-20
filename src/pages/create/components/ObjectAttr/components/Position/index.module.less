@@ -1,0 +1,20 @@
+.item {
+  display: flex;
+  margin-bottom: 10px;
+  :global {
+    .ant-input-number-group-wrapper {
+      width: calc(50% - 5px);
+      &:nth-child(2n) {
+        margin-left: 10px;
+      }
+      .ant-input-number-group-addon {
+        width: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        padding: 0 5px;
+      }
+    }
+  }
+}

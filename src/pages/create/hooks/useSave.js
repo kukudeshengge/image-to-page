@@ -8,6 +8,19 @@ import { uploadResource } from '../../../api/image'
 const useSave = () => {
   const { workspace, canvas, id } = createStore
   const { trigger: saveImage, isMutating: saveImageLoading } = useSaveImage()
+  
+  const unloadSendBeacon = () => {
+    const data = JSON.stringify({
+      id: createStore.id,
+      authorization: localStorage.getItem('authorization'),
+      audio: createStore.audio,
+      loadingPage: createStore.loadingPage,
+      pageList: createStore.pageList
+    })
+    const blob = new Blob([data], { type: 'application/json' })
+    navigator.sendBeacon('/image_to_h5/image/save', blob)
+  }
+  
   const getCanvasData = async () => {
     const base64 = workspace.toImage()
     const file = await base64ConvertFile(base64)
@@ -17,23 +30,20 @@ const useSave = () => {
       canvasData: workspace.toObject()
     }
   }
-  // 预览
-  const onPreview = () => {
-  
-  }
   // 保存
-  const onSave = () => {
-    saveImage({
-      id,
-      audio: createStore.audio,
-      loadingPage: createStore.loadingPage,
-      pageList: createStore.pageList
-    })
-  }
-  
-  // 发布
-  const onPublish = () => {
-  
+  const onSave = async () => {
+    if (saveImageLoading) return
+    try {
+      await saveImage({
+        id,
+        audio: createStore.audio,
+        loadingPage: createStore.loadingPage,
+        pageList: createStore.pageList
+      })
+      message.success('保存成功')
+    } catch (err) {
+      message.success(err.message)
+    }
   }
   
   // 上传模板
@@ -66,10 +76,10 @@ const useSave = () => {
   }
   
   return {
-    onPreview,
     onSave,
-    onPublish,
-    uploadToTemplate
+    saveImageLoading,
+    uploadToTemplate,
+    unloadSendBeacon
   }
 }
 

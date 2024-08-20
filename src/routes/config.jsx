@@ -44,7 +44,7 @@ const routes = [
     title: '数据'
   },
   {
-    path: '/preview',
+    path: '/preview/:id',
     element: <Preview/>,
     title: '预览'
   },

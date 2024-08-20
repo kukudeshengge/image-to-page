@@ -60,5 +60,5 @@ html, body, #root {
 }
 
 iframe {
-    display: none !important;
+    display: none;
 }

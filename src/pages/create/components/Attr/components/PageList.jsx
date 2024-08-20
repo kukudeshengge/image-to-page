@@ -57,6 +57,7 @@ const PageList = () => {
   }
   
   const onChangePage = (index) => {
+    if (index === pageIndex) return
     createStore.changePage(index)
   }
   

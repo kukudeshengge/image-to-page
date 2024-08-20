@@ -2,17 +2,34 @@
   position: fixed;
   inset: 0;
   background: #f3f5fa;
-  z-index: 2;
-  display: flex;
+  z-index: 99999;
   align-items: center;
   justify-content: center;
+  display: flex;
 }
 
 .container {
   font-size: 40px;
   font-family: zitiquan, serif;
   letter-spacing: 10px;
+
   li {
     list-style: none;
+  }
+}
+
+.opacity-loading {
+  animation: opacity 0.8s;
+  display: none;
+}
+
+@keyframes opacity {
+  0% {
+    opacity: 1;
+    display: flex;
+  }
+  100% {
+    opacity: 0;
+    display: none !important;
   }
 }

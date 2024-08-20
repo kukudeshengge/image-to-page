@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames/bind'
 import styles from './index.module.less'
 import { shapeList } from './config'
@@ -8,7 +8,12 @@ import { createStore } from '../../../../../../store/create'
 const cs = classNames.bind(styles)
 
 const Decorate = () => {
-  const { workspace } = createStore
+  const { workspace, leftNavScroll } = createStore
+  
+  useEffect(() => {
+    leftNavScroll.refresh()
+  }, [])
+  
   const onClick = (type, item) => {
     if (type === 'line') {
       workspace.add.addLine(item)

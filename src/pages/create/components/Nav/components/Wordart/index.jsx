@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames/bind'
 import imageTextStyles from '../ImageText/index.module.less'
 import styles from './index.module.less'
@@ -7,14 +7,19 @@ import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../../store/create'
 import Image from '../../../../../../components/Image'
 import { useQueryResourceList } from '../ImageText/hooks'
+import { hideLoading, showLoading } from '../../../../../../utils/msgLoading'
 
 const cs = classNames.bind(styles)
 
 const Wordart = () => {
-  const { workspace } = createStore
+  const { workspace, leftNavScroll } = createStore
   const { data } = useQueryResourceList({
     type: 'hot-text'
   })
+  
+  useEffect(() => {
+    leftNavScroll.refresh()
+  }, [data])
   
   const onClick = (item) => {
     switch (item.type) {
@@ -50,8 +55,10 @@ const Wordart = () => {
     }
   }
   
-  const addHotText = (item) => {
-    workspace.add.jsonGroupToObject(item.data)
+  const addHotText = async (item) => {
+    showLoading('正在使用文字')
+    await workspace.add.jsonGroupToObject(item.data)
+    hideLoading()
   }
   
   return (

@@ -17,7 +17,7 @@ function CreateFetch (prePath) {
   }
   fetch.afterFetch = (res) => {
     if (res.code === 401) {
-      // window.location.replace('/login')
+      window.location.replace('/login')
     }
   }
   return fetch

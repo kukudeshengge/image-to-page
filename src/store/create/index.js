@@ -2,19 +2,21 @@ import { makeAutoObservable } from 'mobx'
 import { PageItemStore } from './pageItem'
 import { message } from 'antd'
 import { v4 as uuid } from 'uuid'
+import { loadResource } from '../../utils/load'
 
 class CreateStore {
   id = null
-  leftNavScroll = null // 作恶导航scroll
+  leftNavScroll = null // 左侧导航scroll
   attrScroll = null // 右侧属性scroll
   comScroll = null // 组件设置scroll
   navActiveKey = 'image-text' // 左侧导航高亮key
   // navActiveKey = 'wordart' // 左侧导航高亮key
   filterActiveKey = 0 // 滤镜高亮key
-  attrActiveKey = 0 // 右侧属性高亮key
+  attrActiveKey = 2 // 右侧属性高亮key
   comSettingActiveKey = 0 // 组件设置高亮key
   canvasLoading = true
   editPageLoadingModal = false
+  publishOpen = false
   canvas = null
   workspace = null
   loadingPage = {
@@ -47,7 +49,6 @@ class CreateStore {
     this.canvas.on('object:modified', this.modifiedCanvas)
   }
   modifiedCanvas = () => {
-    console.log('modifiedCanvas')
     const pageItem = this.getCurrentPage()
     pageItem.canvasData = this.workspace.toObject()
     if (this.attrActiveKey === 1) {
@@ -58,10 +59,10 @@ class CreateStore {
     return this.pageList[this.pageIndex]
   }
   // 切换页面
-  changePage = (index) => {
+  changePage = (index, callback) => {
     this.pageIndex = index
     const pageItem = this.getCurrentPage()
-    this.workspace.loadFromJSON(pageItem)
+    this.workspace.loadFromJSON(pageItem, callback)
   }
   // 插入页面
   addPage = (index) => {
@@ -118,14 +119,16 @@ class CreateStore {
   }
   // 使用模板
   echoTemplate = (data) => {
-    const pageItem = this.getCurrentPage()
-    pageItem.pageAngle = data.pageAngle
-    pageItem.canvasData = data.canvasData
-    pageItem.filterKey = data.filterKey
-    pageItem.filterStyle = data.filterStyle
-    pageItem.opacity = data.opacity
-    pageItem.rectColor = data.rectColor
-    this.workspace.loadFromJSON(pageItem)
+    return new Promise(resolve => {
+      const pageItem = this.getCurrentPage()
+      pageItem.pageAngle = data.pageAngle
+      pageItem.canvasData = data.canvasData
+      pageItem.filterKey = data.filterKey
+      pageItem.filterStyle = data.filterStyle
+      pageItem.opacity = data.opacity
+      pageItem.rectColor = data.rectColor
+      this.workspace.loadFromJSON(pageItem, resolve)
+    })
   }
   createPageItemStore = (data) => {
     const page = new PageItemStore()
@@ -142,7 +145,7 @@ class CreateStore {
     page.canvasData = data.canvasData || null
     return page
   }
-  setDetail = (data) => {
+  setDetail = async (data) => {
     this.audio = data.audio
     this.loadingPage = data.loadingPage
     if (data.pageList && data.pageList.length) {
@@ -152,7 +155,10 @@ class CreateStore {
     } else {
       this.pageList = [new PageItemStore()]
     }
-    this.changePage(0)
+    await loadResource(this.pageList)
+    this.changePage(0, () => {
+      this.canvasLoading = false
+    })
   }
   clearStore = () => {
     this.id = null
@@ -161,8 +167,11 @@ class CreateStore {
     this.comScroll = null
     this.navActiveKey = 'image-text'
     this.filterActiveKey = 0
-    this.attrActiveKey = 0
+    this.attrActiveKey = 2
+    this.comSettingActiveKey = 0
+    this.canvasLoading = true
     this.editPageLoadingModal = false
+    this.publishOpen = false
     this.canvas = null
     this.workspace = null
     this.loadingPage = {
@@ -172,13 +181,14 @@ class CreateStore {
       dotColor: '#1261ff'
     }
     this.selectObjects = []
-    this.pageList = [
-      new PageItemStore()
-    ]
+    this.pageList = [new PageItemStore()]
     this.pageIndex = 0
     this.openSaveModal = false
-    this.comSettingActiveKey = 0
     this.showComSetting = false
+    this.audio = {
+      name: '',
+      src: ''
+    }
   }
 }
 

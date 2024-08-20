@@ -211,7 +211,8 @@ const createMenu = ({ activeObject }) => {
   if (activeObject.isType('activeSelection')) {
     beforeMenu = [combinationMenus[0]]
   } else if (activeObject.isType('group')) {
-    beforeMenu = [combinationMenus[1], ...uploadMenus]
+    const other = localStorage.getItem('role') === 'admin' ? uploadMenus : []
+    beforeMenu = [combinationMenus[1], ...other]
   }
   let menus = [...beforeMenu, ...shareMenus]
   if (activeObject.id === WorkspaceId) {

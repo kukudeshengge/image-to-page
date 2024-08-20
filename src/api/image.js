@@ -23,3 +23,7 @@ export const getImageDetail = (data) => {
 export const saveImage = (data) => {
   return fetch.post('/image_to_h5/image/save', data)
 }
+
+export const deleteImage =(data) => {
+  return fetch.get('/image_to_h5/image/delete', data)
+}

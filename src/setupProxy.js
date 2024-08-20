@@ -14,7 +14,11 @@ const proxyList = [
     pathRewrite: {
       '^/image_to_h5': ''
     }
-  }
+  },
+  {
+    path: '/api_link',
+    target: 'https://topicsit.jrdaimao.com',
+  },
 ]
 
 module.exports = app => {
@@ -22,7 +26,8 @@ module.exports = app => {
     app.use(item.path, createProxyMiddleware({
       target: item.target,
       changeOrigin: true,
-      pathRewrite: item.pathRewrite
+      pathRewrite: item.pathRewrite,
+      secure: false,
     }))
   })
 }

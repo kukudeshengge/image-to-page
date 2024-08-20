@@ -4,9 +4,7 @@ import Menu from './menu/menu'
 import { plugins } from './plugins'
 import { initConfig } from './share/initConfig'
 import { WorkspaceId } from '../../../config/name'
-import { createStore } from '../../../store/create'
-
-export const ExportAttrs = ['id', 'selectable', 'hasControls', 'hoverCursor', 'videoUrl', 'triggered', 'animateList']
+import { ExportAttrs } from '../../../config'
 
 class Workspace {
   canvas = null
@@ -175,9 +173,13 @@ class Workspace {
   }
   
   // 加载json
-  loadFromJSON = (data) => {
+  loadFromJSON = (data, callback) => {
+    if (!data) return
     this.setRectFilter({ style: data.filterStyle })
     this.canvas.discardActiveObject()
+    if (!data.canvasData) {
+      return callback && callback()
+    }
     this.canvas.loadFromJSON(data.canvasData, () => {
       const objects = this.canvas.getObjects()
       objects.forEach(item => {
@@ -185,6 +187,7 @@ class Workspace {
           this.animation.carryAnimations(item)
         }
       })
+      callback && callback()
     })
   }
 }

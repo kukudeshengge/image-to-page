@@ -123,6 +123,7 @@ const CoverageList = () => {
   const { selectObjects, canvas, workspace, attrScroll } = createStore
   const page = createStore.getCurrentPage()
   const [list, setList] = useState([])
+  const [init, setInit] = useState(false)
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -137,7 +138,8 @@ const CoverageList = () => {
       return item.id !== WorkspaceId && item.id !== HoverBorderId
     }).reverse()
     setList(list)
-    setTimeout(() => attrScroll?.refresh())
+    setInit(true)
+    setTimeout(() => attrScroll.refresh())
   }, [page.canvasData])
   // get index
   const getMoveIndex = (array, dragItem) => {
@@ -178,7 +180,7 @@ const CoverageList = () => {
   const activeIdList = selectObjects?.map(item => item.id) || []
   
   return (<div className={cs('coverage-list')}>
-    {list.length === 0 ? <div style={{ marginTop: 100 }}>
+    {list.length === 0 && init ? <div style={{ marginTop: 100 }}>
       <Empty description="空空如也~"/>
     </div> : null}
     <DndContext sensors={sensors} onDragEnd={onDragEnd} modifiers={[restrictToParentElement]}>
