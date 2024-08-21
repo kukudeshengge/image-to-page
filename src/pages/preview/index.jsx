@@ -66,7 +66,7 @@ const Preview = () => {
       }, 'wish/pages/webView/index')
       setMiniCodeUrl(res)
     } catch (err) {
-    
+      console.log(err)
     }
   }
   
@@ -130,7 +130,9 @@ const Preview = () => {
             <div className={cs('content-center-title')}>在微信小程序中推广</div>
             <div className={cs('code-wrap')}>
               <div className={cs('code-img-wrap')}>
-                <img className={cs('mini-code-img')} src={miniCodeUrl} alt=""/>
+                <div className={cs('wechat-img')}>
+                  {miniCodeUrl ? <img className={cs('mini-code-img')} src={miniCodeUrl} alt=""/> : null}
+                </div>
                 <span>微信扫一扫</span>
               </div>
               <div className={cs('code-wrap-content')}>

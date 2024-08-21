@@ -10,9 +10,8 @@ class CreateStore {
   attrScroll = null // 右侧属性scroll
   comScroll = null // 组件设置scroll
   navActiveKey = 'image-text' // 左侧导航高亮key
-  // navActiveKey = 'wordart' // 左侧导航高亮key
   filterActiveKey = 0 // 滤镜高亮key
-  attrActiveKey = 2 // 右侧属性高亮key
+  attrActiveKey = 0 // 右侧属性高亮key
   comSettingActiveKey = 0 // 组件设置高亮key
   canvasLoading = true
   editPageLoadingModal = false
@@ -188,6 +187,33 @@ class CreateStore {
     this.audio = {
       name: '',
       src: ''
+    }
+  }
+  objectAttrChange = (attrs) => {
+    const [object] = this.selectObjects
+    if (!object) return
+    object.set(attrs)
+    this.canvas.renderAll()
+    this.modifiedCanvas()
+  }
+  getCurrentObjectAttr = (attr) => {
+    const page = this.getCurrentPage()
+    const activeObject = this.selectObjects[0]
+    if (!activeObject) return
+    if (!page.canvasData || !page.canvasData.objects) return
+    const list = page.canvasData.objects
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].id === activeObject.id) {
+        if (typeof attr === 'string') {
+          return list[i][attr]
+        } else if (Array.isArray(attr)) {
+          const obj = {}
+          attr.forEach(key => {
+            obj[key] = list[i][key]
+          })
+          return obj
+        }
+      }
     }
   }
 }

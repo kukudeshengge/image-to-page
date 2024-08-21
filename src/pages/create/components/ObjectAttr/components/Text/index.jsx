@@ -8,14 +8,13 @@ import { useFontList } from './fetch'
 import useChangeFontFamily from '../../../../hooks/useChangeFontFamily'
 import { observer } from 'mobx-react-lite'
 import { createStore } from '../../../../../../store/create'
-import { useSetState } from 'ahooks'
-import useAttr from '../../../../hooks/useAttr'
 import { orderList, alignList } from '../GroupButton/config'
 import GroupButton, { CustomCollapse } from '../GroupButton'
 import { hideLoading, showLoading } from '../../../../../../utils/msgLoading'
 import Outline from '../Outline'
 import Shadow from '../Shadow'
 import Position from '../Position'
+import BgColor from '../BgColor'
 
 const { Option } = Select
 const cs = classNames.bind(styles)
@@ -42,6 +41,11 @@ const items = [
     children: <Shadow/>
   },
   {
+    key: 'bgColor',
+    label: '背景颜色',
+    children: <BgColor/>
+  },
+  {
     key: 'pos',
     label: '位置和角度',
     children: <Position/>
@@ -49,69 +53,55 @@ const items = [
 ]
 
 const Text = () => {
-  const { selectObjects, comScroll } = createStore
+  const { selectObjects, comScroll, getCurrentObjectAttr, objectAttrChange } = createStore
+  const {
+    fontFamily,
+    fontSize,
+    fill,
+    fontWeight,
+    fontStyle,
+    underline,
+    linethrough,
+    charSpacing,
+    lineHeight,
+    textAlign,
+    opacity,
+    openCollapseKeys
+  } = getCurrentObjectAttr(['fontFamily', 'fontSize', 'fill', 'fontWeight',
+    'fontStyle', 'underline', 'linethrough', 'charSpacing', 'lineHeight', 'textAlign', 'opacity', 'openCollapseKeys'])
   const [showFixType, setShowFixType] = useState(null)
-  const [state, setState] = useSetState({
-    fontFamily: undefined,
-    fontSize: undefined,
-    fill: '',
-    opacity: '',
-    fontWeight: '',
-    fontStyle: '',
-    underline: '',
-    linethrough: '',
-    charSpacing: 0,
-    lineHeight: 0,
-    openCollapseKeys: ['']
-  })
-  const { setAttr } = useAttr()
   const { data } = useFontList()
   const { runChange } = useChangeFontFamily()
   
   useEffect(() => {
-    if (!selectObjects) return
-    const activeObject = selectObjects[0]
-    setState({
-      fontFamily: activeObject.fontFamily === 'serif' ? undefined : activeObject.fontFamily,
-      fontSize: activeObject.fontSize,
-      fill: activeObject.fill,
-      opacity: 100 - activeObject.opacity * 100,
-      fontWeight: activeObject.fontWeight,
-      fontStyle: activeObject.fontStyle,
-      underline: activeObject.underline,
-      linethrough: activeObject.linethrough,
-      textAlign: activeObject.textAlign,
-      charSpacing: activeObject.charSpacing,
-      lineHeight: activeObject.lineHeight,
-      openCollapseKeys: activeObject.openCollapseKeys || ['align', 'order']
-    })
-    setTimeout(() => comScroll?.refresh())
+    setTimeout(() => comScroll?.refresh(), 300)
   }, [selectObjects])
   
   const onClick = (e, item) => {
     e.stopPropagation()
     if (item.renderContent) {
-      setShowFixType(item.type)
-      return
+      return setShowFixType(item.type)
     }
     setShowFixType(null)
     switch (item.type) {
       case 'weight':
-        const fontWeight = state.fontWeight === 'bold' || state.fontWeight > 500 ? 'normal' : 'bold'
-        asyncEditAttr({ fontWeight })
+        const weight = fontWeight === 'bold' || fontWeight > 500 ? 'normal' : 'bold'
+        objectAttrChange({ fontWeight: weight })
         break
       case 'italic':
-        const fontStyle = state.fontStyle === 'normal' ? 'italic' : 'normal'
-        asyncEditAttr({ fontStyle })
+        const style = fontStyle === 'normal' ? 'italic' : 'normal'
+        objectAttrChange({ fontStyle: style })
         break
       case 'underline':
-        asyncEditAttr({ underline: !state.underline })
+        const newUnderline = !underline
+        objectAttrChange({ underline: newUnderline })
         break
       case 'linethrough':
-        asyncEditAttr({ linethrough: !state.linethrough })
+        const newLineThrough = !linethrough
+        objectAttrChange({ linethrough: newLineThrough })
         break
       case 'clear':
-        asyncEditAttr({
+        objectAttrChange({
           fontWeight: 'normal',
           fontStyle: 'normal',
           underline: false,
@@ -129,71 +119,41 @@ const Text = () => {
   const onSecondClick = (type, value) => {
     switch (type) {
       case 'left':
-        asyncEditAttr({ textAlign: 'left' })
+        objectAttrChange({ textAlign: 'left' })
         break
       case 'justify-center':
-        asyncEditAttr({ textAlign: 'justify-center' })
+        objectAttrChange({ textAlign: 'justify-center' })
         break
       case 'right':
-        asyncEditAttr({ textAlign: 'right' })
+        objectAttrChange({ textAlign: 'right' })
         break
       case 'textSpace':
-        asyncEditAttr({ charSpacing: value })
+        objectAttrChange({ charSpacing: value })
         break
       case 'colSpace':
-        asyncEditAttr({ lineHeight: value })
+        objectAttrChange({ lineHeight: value })
         break
       default:
         return false
     }
   }
   
-  // 修改属性
-  const asyncEditAttr = (value) => {
-    setAttr(value)
-    setState(value)
-    createStore.modifiedCanvas()
-  }
-  
   // 修改字体样式
   const onStyleChange = async (e, options) => {
     showLoading('正在切换字体')
-    setState({ fontFamily: e })
+    objectAttrChange({ fontFamily: e })
     await runChange(options.otherOptions)
     hideLoading()
   }
   
-  // 修改字体size
-  const onSizeChange = e => {
-    asyncEditAttr({ fontSize: e })
-  }
-  
   const onSizeClickChange = (type) => {
-    let size = selectObjects[0].fontSize
+    let size = fontSize
     if (type === 'add') {
       size += 2
     } else {
       size = size - 2 < 10 ? 10 : size - 2
     }
-    asyncEditAttr({ fontSize: size })
-  }
-  
-  // 颜色
-  const onColorChange = e => {
-    const fill = e.hex
-    asyncEditAttr({ fill })
-  }
-  
-  // 标题
-  const onSetTitleChange = item => {
-    asyncEditAttr(item.style)
-  }
-  
-  // 透明度
-  const onOpacityChange = e => {
-    setAttr({ opacity: 1 - e / 100 })
-    setState({ opacity: e })
-    createStore.modifiedCanvas()
+    objectAttrChange({ fontSize: size })
   }
   
   const onWrapClick = () => {
@@ -203,40 +163,38 @@ const Text = () => {
   const getFastHandleActive = (item) => {
     switch (item.type) {
       case 'weight':
-        return state.fontWeight > 500 || state.fontWeight === 'bold'
+        return fontWeight > 500 || fontWeight === 'bold'
       case 'italic':
-        return state.fontStyle === 'italic'
+        return fontStyle === 'italic'
       case 'underline':
-        return state.underline
+        return underline
       case 'linethrough':
-        return state.linethrough
+        return linethrough
       case 'left':
-        return state.textAlign === 'left'
+        return textAlign === 'left'
       case 'justify-center':
-        return state.textAlign === 'justify-center'
+        return textAlign === 'justify-center'
       case 'right':
-        return state.textAlign === 'right'
+        return textAlign === 'right'
       case 'textSpace':
-        return state.charSpacing
+        return charSpacing
       case 'colSpace':
-        return state.lineHeight
+        return lineHeight
       default:
         return false
     }
   }
   const onCollapseChange = (e) => {
-    asyncEditAttr({ openCollapseKeys: e })
+    objectAttrChange({ openCollapseKeys: e })
     setTimeout(() => comScroll.refresh(), 300)
   }
-  
-  if (!state.fontSize) return null
   
   return (
     <div className={cs('text-attr')} onClick={onWrapClick}>
       <div className={cs('item-wrap')}>
         <div className={cs('title')}>字体样式</div>
         <Select
-          value={state.fontFamily}
+          value={fontFamily === 'serif' ? undefined : fontFamily}
           onChange={onStyleChange}
           className={cs('select-style')}
           placeholder="请选择"
@@ -254,8 +212,8 @@ const Text = () => {
         <div className={cs('title')}>字号</div>
         <div className={cs('size')}>
           <Select
-            value={state.fontSize}
-            onChange={onSizeChange}
+            value={fontSize}
+            onChange={(e) => objectAttrChange({ fontSize: e })}
             className={cs('select-size')}
             placeholder={'请选择'}
             options={fontSizeList}
@@ -275,9 +233,13 @@ const Text = () => {
       </div>
       <div className={cs('item-wrap')}>
         <div className={cs('title')}>文字颜色</div>
-        <PopoverColor color={state.fill} onChange={onColorChange} placement={'left'}>
+        <PopoverColor
+          color={fill}
+          onChange={(e) => objectAttrChange({ fill: e.hex })}
+          placement={'left'}
+        >
           <div className={cs('color-wrap')}>
-            <div style={{ background: state.fill }} className={cs('color-view')}/>
+            <div style={{ background: fill }} className={cs('color-view')}/>
             <div className={cs('color-icon')}>
               <img src="https://ossprod.jrdaimao.com/file/1722847203274287.svg" alt=""/>
             </div>
@@ -288,7 +250,7 @@ const Text = () => {
         {
           textFormatList.map(item => {
             return <span
-              onClick={() => onSetTitleChange(item)}
+              onClick={() => objectAttrChange(item.style)}
               style={item.style}
               key={item.id}
             >
@@ -322,8 +284,8 @@ const Text = () => {
       <div className={cs('item-wrap')}>
         <div className={cs('title')}>透明度</div>
         <Slider
-          defaultValue={state.opacity}
-          onChangeComplete={onOpacityChange}
+          value={100 - opacity * 100}
+          onChange={(e) => objectAttrChange({ opacity: 1 - e / 100 })}
           min={0}
           max={100}
           style={{ width: 165 }}
@@ -331,7 +293,7 @@ const Text = () => {
       </div>
       <CustomCollapse
         onChange={onCollapseChange}
-        activeKey={state.openCollapseKeys}
+        activeKey={openCollapseKeys || ['align', 'order']}
         items={items}
       />
     </div>

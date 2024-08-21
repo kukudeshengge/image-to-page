@@ -84,8 +84,8 @@ const Handle = () => {
                             key={item.id}
                             onClick={() => onChange(index)}
                           >
-                                                        {index + 1}
-                                                    </span>
+                            {index + 1}
+                          </span>
                         }
                       )
                     }

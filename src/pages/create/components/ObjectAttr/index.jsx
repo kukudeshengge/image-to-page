@@ -17,7 +17,7 @@ const MoveWrap = () => {
   
   const changeKey = item => {
     createStore.comSettingActiveKey = item.value
-    comScroll.refresh()
+    setTimeout(() => comScroll.refresh())
   }
   
   useEffect(() => {

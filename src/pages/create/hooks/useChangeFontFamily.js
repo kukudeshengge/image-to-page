@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useCallback } from 'react'
-import useAttr from './useAttr'
 import FontFaceObserver from 'fontfaceobserver'
 import { createStore } from '../../../store/create'
 
@@ -19,7 +18,7 @@ export const filterToText = (list) => {
 }
 
 const useChangeFontFamily = () => {
-  const { setAttr } = useAttr()
+  const {objectAttrChange} = createStore
   
   /**
    * 字体修改
@@ -27,7 +26,7 @@ const useChangeFontFamily = () => {
   const runChange = useCallback((item) => {
     // 已经加载过不需要重新加载 直接设置字体
     if (Font.has(item.key)) {
-      setAttr({ fontFamily: item.key })
+      objectAttrChange({ fontFamily: item.key })
       return Promise.resolve()
     }
     return new Promise((resolve, reject) => {
@@ -39,7 +38,7 @@ const useChangeFontFamily = () => {
       const font = new FontFaceObserver(name)
       return font.load(name, 2000000).then(function () {
         Font.set(name, true)
-        setAttr({ fontFamily: name })
+        objectAttrChange({ fontFamily: name })
         createStore.modifiedCanvas()
         resolve()
       }, function (e) {
@@ -48,7 +47,7 @@ const useChangeFontFamily = () => {
       })
     })
     
-  }, [setAttr])
+  }, [])
   /**
    * 加载多个字体
    */
