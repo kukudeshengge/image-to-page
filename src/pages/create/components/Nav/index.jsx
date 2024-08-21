@@ -5,6 +5,7 @@ import { navList, ComEnum, filterList } from './config'
 import { createStore } from '../../../../store/create'
 import { observer } from 'mobx-react-lite'
 import IScroll from 'iscroll'
+import { message } from 'antd'
 
 const cs = classNames.bind(styles)
 
@@ -15,6 +16,7 @@ const Nav = () => {
     createStore.navActiveKey = item.type
   }
   const onFilterChange = (item) => {
+    if (item.value === 1) return message.warning('功能正在开发中')
     createStore.filterActiveKey = item.value
   }
   

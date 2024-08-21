@@ -10,6 +10,7 @@ import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { arrayMove, useSortable, SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
 import { restrictToParentElement } from '@dnd-kit/modifiers'
 import { CSS } from '@dnd-kit/utilities'
+import {getMoveIndex} from '../../../../../utils'
 
 const cs = classNames.bind(styles)
 
@@ -133,7 +134,9 @@ const CoverageList = () => {
   )
   // object list
   useEffect(() => {
-    if (!page.canvasData || !page.canvasData.objects) return
+    if (!page.canvasData || !page.canvasData.objects) {
+      return setInit(true)
+    }
     const list = page.canvasData.objects.filter(item => {
       return item.id !== WorkspaceId && item.id !== HoverBorderId
     }).reverse()
@@ -141,18 +144,6 @@ const CoverageList = () => {
     setInit(true)
     setTimeout(() => attrScroll.refresh())
   }, [page.canvasData])
-  // get index
-  const getMoveIndex = (array, dragItem) => {
-    const { active, over } = dragItem
-    const activeIndex = array.findIndex((item) => item.id === active.id)
-    const overIndex = array.findIndex((item) => item.id === over?.id)
-    
-    // 处理未找到索引的情况
-    return {
-      activeIndex: activeIndex !== -1 ? activeIndex : 0,
-      overIndex: overIndex !== -1 ? overIndex : activeIndex
-    }
-  }
   // drag end
   const onDragEnd = (dragItem) => {
     const { active, over } = dragItem

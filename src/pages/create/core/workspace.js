@@ -25,16 +25,23 @@ class Workspace {
     this.initRect()
   }
   
-  _initPlugins () {
+  _initPlugins = () => {
     this._use('menu', Menu)
     for (let i = 0; i < plugins.length; i++) {
       this._use(plugins[i].name, plugins[i].plugin)
     }
   }
   
-  _use (name, C) {
+  _use = (name, C) => {
     this[name] = new C(this.canvas, this)
     this.canvas.share[name] = this[name]
+  }
+  
+  _destroyPlugins = () => {
+    for (let i = 0; i < plugins.length; i++) {
+      this[plugins[i].name].destroy?.()
+      this[plugins[i].name] = null
+    }
   }
   
   // 初始化rect
@@ -49,12 +56,6 @@ class Workspace {
       selectable: false,
       controls: false,
       hoverCursor: 'default'
-      // shadow: {
-      //   color: 'rgba(0, 0, 0, 0.16)',
-      //   blur: 10,
-      //   offsetX: 0,
-      //   offsetY: 0
-      // }
     })
     this.canvas.add(rect)
     this.auto()
@@ -183,12 +184,17 @@ class Workspace {
     this.canvas.loadFromJSON(data.canvasData, () => {
       const objects = this.canvas.getObjects()
       objects.forEach(item => {
-        if (Array.isArray(item.animateList) && item.animateList.length) {
-          this.animation.carryAnimations(item)
-        }
+        this.animation.carryAnimations(item)
       })
       callback && callback()
     })
+  }
+  destroy = () => {
+    this._destroyPlugins()
+    this.canvas.clear()
+    this.canvas.dispose()
+    this.canvas = null
+    this.canvasEl = null
   }
 }
 

@@ -11,7 +11,7 @@ export const useSaveImage = () => {
 }
 
 export const useImageDetail = (params) => {
-  const { data, isLoading } = useSWR(getImageDetail.name, () => getImageDetail(params))
+  const { data, isLoading } = useSWR(`${getImageDetail.name}-${params.id}`, () => getImageDetail(params))
   return {
     data,
     isLoading

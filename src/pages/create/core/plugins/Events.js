@@ -9,6 +9,7 @@ import { createStore } from '../../../../store/create'
  */
 class Events extends Base {
   mousePointer = null
+  menuEventObjects = {}
   
   constructor (...props) {
     super(...props)
@@ -19,18 +20,21 @@ class Events extends Base {
   
   // 获取鼠标位置
   initMouseMoveEvent = () => {
-    this.canvas.on('mouse:move', e => {
-      this.mousePointer = e.absolutePointer
-      this.calcRemoveMenu(e)
-    })
+    this.canvas.on('mouse:move', this.mouseMove)
+  }
+  mouseMove = (e) => {
+    this.mousePointer = e.absolutePointer
+    this.calcRemoveMenu(e)
   }
   // 绑定菜单里的快捷键
   initMenuEvents = () => {
     Object.values(MenuKeys).forEach(item => {
-      hotkeys(item.eventName, (e) => {
+      const menuEvents = (e) => {
         e.preventDefault()
         getMenuFunc(this.workspace, item.id)?.()
-      })
+      }
+      this.menuEventObjects[item.eventName] = menuEvents
+      hotkeys(item.eventName, menuEvents)
     })
   }
   calcRemoveMenu = (e) => {
@@ -51,6 +55,15 @@ class Events extends Base {
     const selected = e.selected || []
     createStore.selectObjects = selected
     createStore.showComSetting = selected.length === 1
+  }
+  destroy = () => {
+    this.canvas.off('mouse:move', this.mouseMove)
+    this.canvas.off('selection:updated', this.selectUpdate)
+    this.canvas.off('selection:created', this.selectUpdate)
+    this.canvas.off('selection:cleared', this.selectUpdate)
+    Object.keys(this.menuEventObjects).forEach(key => {
+      hotkeys.unbind(key, this.menuEventObjects[key])
+    })
   }
 }
 

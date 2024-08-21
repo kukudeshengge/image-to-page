@@ -4,9 +4,10 @@ import { IMGCLIENT } from '@/utils/ossUtil'
 import { message } from 'antd'
 import { useSaveImage } from '../hooks'
 import { uploadResource } from '../../../api/image'
+import { fabric } from 'fabric'
 
 const useSave = () => {
-  const { workspace, canvas, id } = createStore
+  const { workspace, canvas, id, pageList } = createStore
   const { trigger: saveImage, isMutating: saveImageLoading } = useSaveImage()
   
   const unloadSendBeacon = () => {
@@ -30,19 +31,48 @@ const useSave = () => {
       canvasData: workspace.toObject()
     }
   }
+  const getFirstPageData = () => {
+    return new Promise((resolve, reject) => {
+      const [first] = pageList
+      if (!first.canvasData) {
+        return resolve(null)
+      }
+      let canvasEl = document.createElement('canvas')
+      let canvas = new fabric.Canvas(canvasEl, {
+        width: 375,
+        height: 667
+      })
+      canvas.loadFromJSON(first.canvasData, async () => {
+        try {
+          const file = await base64ConvertFile(canvas.toDataURL())
+          const res = await IMGCLIENT.upload(file)
+          resolve(res.url)
+        } catch (err) {
+          reject(err)
+        } finally {
+          canvas.clear()
+          canvas.dispose()
+          canvas = null
+          canvasEl = null
+        }
+      })
+    })
+  }
   // 保存
   const onSave = async () => {
     if (saveImageLoading) return
     try {
+      const firstPageUrl = await getFirstPageData()
       await saveImage({
         id,
         audio: createStore.audio,
         loadingPage: createStore.loadingPage,
-        pageList: createStore.pageList
+        pageList: createStore.pageList,
+        firstPageUrl
       })
       message.success('保存成功')
     } catch (err) {
-      message.success(err.message)
+      message.warning(err.message)
     }
   }
   

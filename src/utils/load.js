@@ -81,9 +81,7 @@ export const loadResource = async (data) => {
     let list = []
     if (Array.isArray(data)) {
       data.forEach(item => {
-        item.canvasData?.objects.forEach(item => {
-          list.push(item)
-        })
+        item.canvasData?.objects.forEach(item => list.push(item))
       })
     } else {
       list = data.canvasData?.objects
@@ -98,7 +96,6 @@ export const loadResource = async (data) => {
     res.imageList = imageList
     res.fontList = fontList
   }
-  
   await loadImageList(res.imageList)
   await loadFontList(res.fontList)
 }

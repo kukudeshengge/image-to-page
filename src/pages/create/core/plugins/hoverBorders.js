@@ -54,6 +54,12 @@ class HoverBorder extends Base {
     this.rect = null
     this.canvas.renderAll()
   }
+  destroy = () => {
+    this.canvasEvents = null
+    this.hoveredTarget = undefined
+    this.rect = null
+    this.canvas.off(this.canvasEvents)
+  }
 }
 
 export default HoverBorder

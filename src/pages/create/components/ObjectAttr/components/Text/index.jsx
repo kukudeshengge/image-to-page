@@ -68,7 +68,8 @@ const Text = () => {
     opacity,
     openCollapseKeys
   } = getCurrentObjectAttr(['fontFamily', 'fontSize', 'fill', 'fontWeight',
-    'fontStyle', 'underline', 'linethrough', 'charSpacing', 'lineHeight', 'textAlign', 'opacity', 'openCollapseKeys'])
+    'fontStyle', 'underline', 'linethrough', 'charSpacing', 'lineHeight', 'textAlign',
+    'opacity', 'openCollapseKeys'])
   const [showFixType, setShowFixType] = useState(null)
   const { data } = useFontList()
   const { runChange } = useChangeFontFamily()
@@ -119,20 +120,15 @@ const Text = () => {
   const onSecondClick = (type, value) => {
     switch (type) {
       case 'left':
-        objectAttrChange({ textAlign: 'left' })
-        break
+        return objectAttrChange({ textAlign: 'left' })
       case 'justify-center':
-        objectAttrChange({ textAlign: 'justify-center' })
-        break
+        return objectAttrChange({ textAlign: 'justify-center' })
       case 'right':
-        objectAttrChange({ textAlign: 'right' })
-        break
+        return objectAttrChange({ textAlign: 'right' })
       case 'textSpace':
-        objectAttrChange({ charSpacing: value })
-        break
+        return objectAttrChange({ charSpacing: value })
       case 'colSpace':
-        objectAttrChange({ lineHeight: value })
-        break
+        return objectAttrChange({ lineHeight: value })
       default:
         return false
     }
@@ -141,7 +137,6 @@ const Text = () => {
   // 修改字体样式
   const onStyleChange = async (e, options) => {
     showLoading('正在切换字体')
-    objectAttrChange({ fontFamily: e })
     await runChange(options.otherOptions)
     hideLoading()
   }
@@ -183,10 +178,6 @@ const Text = () => {
       default:
         return false
     }
-  }
-  const onCollapseChange = (e) => {
-    objectAttrChange({ openCollapseKeys: e })
-    setTimeout(() => comScroll.refresh(), 300)
   }
   
   return (
@@ -292,7 +283,7 @@ const Text = () => {
         />
       </div>
       <CustomCollapse
-        onChange={onCollapseChange}
+        onChange={(e) => objectAttrChange({ openCollapseKeys: e })}
         activeKey={openCollapseKeys || ['align', 'order']}
         items={items}
       />

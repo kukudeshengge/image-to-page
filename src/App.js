@@ -6,7 +6,6 @@ import './share/reset.css'
 import './share/global.css'
 
 function App () {
- 
   return (
     <ConfigProvider
       theme={{

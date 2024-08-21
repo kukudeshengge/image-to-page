@@ -23,7 +23,7 @@ class Animation extends Base {
     } else {
       list = object.animateList
     }
-    if (!list || !object) return
+    if (!list || !list.length || !object) return
     
     object.set({
       hasControls: false,

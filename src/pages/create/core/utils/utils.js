@@ -25,7 +25,6 @@ export function cssToFabricGradient (stops, width, height, angle) {
   })
 }
 
-const menuFnCache = new Map()
 const recursionGetFn = (list, id) => {
   for (const item of list) {
     if (item.id === id) {
@@ -42,9 +41,6 @@ const recursionGetFn = (list, id) => {
 
 export function getMenuFunc (workspace, id) {
   if (!workspace || !id) return null
-  if (menuFnCache.has(id)) {
-    return menuFnCache.get(id)
-  }
   let func = null
   const menuList = [...blankMenus, ...combinationMenus, ...shareMenus, ...imageMenus, ...textMenus, ...uploadMenus]
   const fn = recursionGetFn(menuList, id)
@@ -55,6 +51,5 @@ export function getMenuFunc (workspace, id) {
       func = func ? func[key] : workspace[key]
     })
   }
-  menuFnCache.set(id, func)
   return func
 }

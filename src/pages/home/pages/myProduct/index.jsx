@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Form, Select, DatePicker, Input, Row, Col, Button, Pagination, Dropdown, Spin, Modal, message } from 'antd'
+import { Form, Select, DatePicker, Input, Row, Col, Button, Dropdown, Spin, Modal, message } from 'antd'
 import styles from './index.module.less'
 import classNames from 'classnames/bind'
 import IScroll from 'iscroll'
@@ -8,7 +8,7 @@ import useGetCardStyle from '../../../../hooks/useGetCardStyle'
 import { addImage } from '../../../../api/image'
 import { useImageDelete, useImageList } from './hooks'
 import { useUpdateEffect } from 'ahooks'
-import ProductItemThumb from './ProductItemThumb'
+// import ProductItemThumb from './ProductItemThumb'
 
 const { RangePicker } = DatePicker
 const cs = classNames.bind(styles)
@@ -147,7 +147,8 @@ const MyProduct = () => {
                   }
                   return <div style={styles} className={cs('product-item')} key={index}>
                     <div className={cs('product-item-top')}>
-                      <ProductItemThumb data={item.firstPageData}/>
+                      <img src={item.firstPageUrl || 'https://ossprod.jrdaimao.com/file/1724222043671526.jpeg'} alt=""/>
+                      {/*<ProductItemThumb data={item.firstPageData}/>*/}
                       <div
                         style={{ background: item.status === 1 ? '#1261ff' : '#999' }}
                         className={cs('product-item-status')}

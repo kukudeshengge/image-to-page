@@ -30,11 +30,8 @@ const Create = () => {
   
   useEffect(() => {
     createStore.id = id
-    return () => {
-      createStore.clearStore()
-    }
   }, [])
-  
+
   useEffect(() => {
     if (data && workspace) {
       createStore.setDetail(data)

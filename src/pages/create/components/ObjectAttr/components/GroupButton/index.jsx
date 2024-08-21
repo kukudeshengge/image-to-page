@@ -16,7 +16,7 @@ export const getFn = (str, workspace) => {
 }
 
 const GroupButton = (props) => {
-  const {list} = props
+  const { list } = props
   const { workspace } = createStore
   const onClick = (item) => {
     const func = getFn(item.fn, workspace)
@@ -37,8 +37,13 @@ const GroupButton = (props) => {
   )
 }
 
-export const CustomCollapse = (props) => {
-  return <Collapse {...props} className={cs('custom-collapse')} />
-}
+export const CustomCollapse = observer((props) => {
+  const { comScroll } = createStore
+  const onChange = (e) => {
+    props.onChange?.(e)
+    setTimeout(() => comScroll.refresh(), 300)
+  }
+  return <Collapse {...props} onChange={onChange} className={cs('custom-collapse')}/>
+})
 
 export default observer(GroupButton)

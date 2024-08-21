@@ -216,6 +216,7 @@ class Add extends Base {
       fill: 'transparent',
       ...this.createShareAttr()
     })
+    console.log(path)
     this.firstAddObject(path)
   }
   // 竖排文字

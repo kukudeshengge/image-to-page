@@ -23,8 +23,10 @@ const Draw = () => {
     const workspace = new Workspace(canvas)
     workspace.createStore = createStore
     createStore.init(canvas, workspace)
-    // workspace.add.uploadImage()
-    // workspace.add.addText()
+    return () => {
+      workspace.destroy()
+      createStore.clearStore()
+    }
   }, [])
   
   return (

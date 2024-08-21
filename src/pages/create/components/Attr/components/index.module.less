@@ -69,9 +69,10 @@
 
 .page-list-item {
   display: flex;
-  cursor: pointer;
+  cursor: move;
   justify-content: space-around;
   padding: 20px 15px 30px 15px;
+  background: #ffffff;
 
   &:not(:last-child) {
     border-bottom: solid 1px #cccccc;
@@ -182,6 +183,7 @@
   border-radius: 50%;
   bottom: -15px;
   opacity: 0;
+  cursor: pointer;
 
   img {
     width: 18px;
@@ -220,6 +222,7 @@
     border-radius: 50%;
     margin-bottom: 5px;
     background: #f5f7fb;
+    cursor: pointer;
 
     img {
       width: 16px;
@@ -267,7 +270,6 @@
     background: #f5f8fb;
   }
 }
-
 
 .page-attr {
   user-select: none;

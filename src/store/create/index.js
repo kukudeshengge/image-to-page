@@ -50,9 +50,6 @@ class CreateStore {
   modifiedCanvas = () => {
     const pageItem = this.getCurrentPage()
     pageItem.canvasData = this.workspace.toObject()
-    if (this.attrActiveKey === 1) {
-      setTimeout(() => this.attrScroll.refresh())
-    }
   }
   getCurrentPage = () => {
     return this.pageList[this.pageIndex]
@@ -166,7 +163,7 @@ class CreateStore {
     this.comScroll = null
     this.navActiveKey = 'image-text'
     this.filterActiveKey = 0
-    this.attrActiveKey = 2
+    this.attrActiveKey = 0
     this.comSettingActiveKey = 0
     this.canvasLoading = true
     this.editPageLoadingModal = false

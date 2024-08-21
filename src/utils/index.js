@@ -141,3 +141,15 @@ export const extractUrlCentreSize = (src) => {
   }
   return result;
 };
+
+export const getMoveIndex = (array, dragItem) => {
+  const { active, over } = dragItem
+  const activeIndex = array.findIndex((item) => item.id === active.id)
+  const overIndex = array.findIndex((item) => item.id === over?.id)
+  
+  // 处理未找到索引的情况
+  return {
+    activeIndex: activeIndex !== -1 ? activeIndex : 0,
+    overIndex: overIndex !== -1 ? overIndex : activeIndex
+  }
+}

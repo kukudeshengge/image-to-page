@@ -26,16 +26,11 @@ const Animation = () => {
       scrollbars: true,
       preventDefault: false
     })
-    let scroll = new IScroll('#animation-select-list-wrap', {
+    new IScroll('#animation-select-list-wrap', {
       mouseWheel: true,
       scrollbars: true,
       preventDefault: false
     })
-    // return () => {
-    //   animationScroll.current.destroy()
-    //   scroll.destroy()
-    //   scroll = null
-    // }
   }, [])
   
   useEffect(() => {

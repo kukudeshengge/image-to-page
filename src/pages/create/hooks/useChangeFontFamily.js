@@ -3,19 +3,8 @@ import { useCallback } from 'react'
 import FontFaceObserver from 'fontfaceobserver'
 import { createStore } from '../../../store/create'
 
-// 通用字体，不需要加载字体包
-const GeneralTextList = ['serif']
 // 缓存已经加载过的字体包名称，有重复的引用无需再次引入了
 const Font = new Map()
-
-/**
- * 过滤出非通用字体
- * @param list
- */
-export const filterToText = (list) => {
-  if (!Array.isArray(list)) return []
-  return list.filter((item) => item.type === 'textbox' && !GeneralTextList.includes(item.fontFamily))
-}
 
 const useChangeFontFamily = () => {
   const {objectAttrChange} = createStore
@@ -48,45 +37,9 @@ const useChangeFontFamily = () => {
     })
     
   }, [])
-  /**
-   * 加载多个字体
-   */
-  const loadFont = useCallback((objectsData) => {
-    if (!objectsData) return Promise.resolve()
-    // 拿到需要加载字体包的字体
-    const textList = filterToText(objectsData)
-    let style = ''
-    textList.forEach(item => {
-      [].forEach(r => {
-        if (item.fontFamily === r.value && !Font.has(r.value)) {
-          style += `@font-face {font-family: ${r.value};src: url('${r.url}');}`
-        }
-      })
-    })
-    if (style === '') return Promise.resolve()
-    // 组装一下font-face，放到body中
-    const el = document.createElement('style')
-    el.innerHTML = style
-    document.body.appendChild(el)
-    // 加载多个字体
-    const fontFamiliesAll = textList.map((item) => {
-      return new Promise((resolve, reject) => {
-        const font = new FontFaceObserver(item.fontFamily)
-        font.load(item.fontFamily, 2000000).then(() => {
-          Font.set(item.fontFamily, true)
-          resolve()
-        }).catch(err => {
-          reject()
-          console.log('loadFont', err)
-        })
-      })
-    })
-    return Promise.all(fontFamiliesAll)
-  }, [])
   
   return {
     runChange,
-    loadFont
   }
 }
 
